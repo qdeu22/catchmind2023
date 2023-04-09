@@ -72,6 +72,14 @@ app.get("/logout", isLoggedIn, function (req, res, next) {
   });
 });
 
-app.listen(port, () => {
+app.get("/channel", function (req, res, next) {
+  res.render("channel", {});
+});
+
+app.get("/:pageId", function (req, res, next) {
+  res.send(`HELLo`);
+});
+
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

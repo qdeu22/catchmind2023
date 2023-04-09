@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    title 채널 혼잡도 표시
+    script(src="/socket.io/socket.io.js")
+    script(src="javascript/channel.js")
+  body
+    h1 채널 혼잡도
+    div
+      a(href='/channel/1') 채널 1
+      br
+      a(href='/channel/2') 채널 2
+    div(id='channel1')
+    div(id='channel2')
