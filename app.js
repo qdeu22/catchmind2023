@@ -73,17 +73,16 @@ app.get("/logout", isLoggedIn, function (req, res, next) {
 });
 
 app.get("/channel", isLoggedIn, function (req, res, next) {
-  res.render("channel", {});
+  res.render("channel");
 });
 
 app.get("/channel/:pageId", function (req, res, next) {
-  console.log("/channel/:pageId", req.headers.referer);
   if (req.headers.referer !== "http://localhost:3000/channel") {
     // 이전 페이지가 특정한 URL이 아닌 경우
     return res.send(
       `<script>
          alert('잘못된 접근입니다.');
-         history.back();      
+         history.back();
       </script >`
     );
   }
@@ -91,36 +90,19 @@ app.get("/channel/:pageId", function (req, res, next) {
   res.render("channel_process", { number });
 });
 
-// 채널 1 혼잡도 정보 전송
-function sendChannel1Congestion() {
-  const congestion = Math.random(); // 임의의 혼잡도 정보 생성
-  io.emit("channel1_congestion", congestion);
-}
+// 방문자 수 저장 변수
+let visitors = 0;
 
-// 채널 2 혼잡도 정보 전송
-function sendChannel2Congestion() {
-  const congestion = Math.random(); // 임의의 혼잡도 정보 생성
-  io.emit("channel2_congestion", congestion);
-}
-
-// 1초마다 혼잡도 정보 전송
-setInterval(() => {
-  sendChannel1Congestion();
-  sendChannel2Congestion();
-}, 1000);
-
-// Socket.io 연결
+// 소켓 연결
 io.on("connection", (socket) => {
-  console.log("새로운 클라이언트 연결됨");
+  // 새로운 방문자 접속 시 visitors 변수를 증가시키고, 모든 클라이언트에게 방문자 수를 전달합니다.
+  visitors++;
+  io.emit("visitorsUpdated", visitors);
 
-  // 클라이언트로부터 채널 1 요청 받음
-  socket.on("request_channel1", () => {
-    sendChannel1Congestion();
-  });
-
-  // 클라이언트로부터 채널 2 요청 받음
-  socket.on("request_channel2", () => {
-    sendChannel2Congestion();
+  // 방문자가 연결을 끊을 때마다 visitors 변수를 감소시키고, 모든 클라이언트에게 방문자 수를 전달합니다.
+  socket.on("disconnect", () => {
+    visitors--;
+    io.emit("visitorsUpdated", visitors);
   });
 });
 
