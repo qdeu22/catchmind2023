@@ -47,7 +47,7 @@ function isLoggedIn(req, res, next) {
 }
 
 app.get("/channel", isLoggedIn, function (req, res, next) {
-  res.render("channel");
+  res.sendFile(__dirname + "/views/channel.html");
 });
 
 app.get("/channel/:pageId", function (req, res, next) {
@@ -60,8 +60,7 @@ app.get("/channel/:pageId", function (req, res, next) {
       </script >`
     );
   }
-  var number = req.params.pageId;
-  res.render("channel_process", { number });
+  res.sendFile(__dirname + `/views/${req.params.pageId}`);
 });
 
 // 방문자 수 저장 변수

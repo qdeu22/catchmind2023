@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>게임접속</title>
+    <link rel="stylesheet" href="/stylesheets/channel.css" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="javascript/channel.js"></script>
+  </head>
+
+  <body>
+    <div class="navBar">
+      <div class="box-navbar">
+        <p id="visitors"></p>
+      </div>
+    </div>
+    <div class="container">
+      <section class="box">
+        <div class="box-sidebar">
+          <ol>
+            <li>
+              <button class="link-button" data-url="/channel/1.html">
+                이용 안내
+              </button>
+            </li>
+            <li>
+              <button class="link-button" data-url="2.html">공지사항</button>
+            </li>
+            <li>
+              <button class="link-button" data-url="/channel/3.html">
+                게임방 조회
+              </button>
+            </li>
+            <li>
+              <button class="link-button" data-url="/channel/4.html">
+                광장 대화
+              </button>
+            </li>
+          </ol>
+        </div>
+        <div class="box-contents">
+          <p>컨텐츠</p>
+        </div>
+      </section>
+    </div>
+    <div class="bottomBar">
+      <p>바텀</p>
+    </div>
+
+    <script>
+      const buttons = document.querySelectorAll(".link-button");
+      const contents = document.querySelector(".box-contents");
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+          const url = this.getAttribute("data-url");
+
+          fetch(url)
+            .then((response) => response.text())
+            .then((data) => {
+              contents.innerHTML = data;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>

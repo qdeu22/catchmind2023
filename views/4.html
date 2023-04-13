@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>채팅</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      socket = io("/my-namespace");
+
+      socket.on("connect", () => {
+        console.log(4);
+        console.log(`소켓 ${socket.id} 연결됨`);
+        socket.emit("join", "채팅방1");
+      });
+
+      socket.on("chat", (message) => {
+        console.log(`수신: ${message}`);
+        const li = document.createElement("li");
+        li.textContent = message;
+        document.getElementById("chatList").appendChild(li);
+      });
+
+      function sendChat() {
+        console.log(6);
+        const input = document.getElementById("chatInput");
+        const message = input.value.trim();
+        if (message) {
+          socket.emit("chat", "채팅방1", message);
+          input.value = "";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <ul id="chatList"></ul>
+    <input id="chatInput" type="text" />
+    <button onclick="sendChat">전송</button>
+  </body>
+</html>
