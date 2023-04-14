@@ -18,52 +18,49 @@
         <div class="box-sidebar">
           <ol>
             <li>
-              <button class="link-button" data-url="/channel/1.html">
-                이용 안내
-              </button>
+              <button class="1">이용안내</button>
             </li>
             <li>
-              <button class="link-button" data-url="2.html">공지사항</button>
+              <button class="2">공지사항</button>
             </li>
             <li>
-              <button class="link-button" data-url="/channel/3.html">
-                게임방 조회
-              </button>
+              <button class="3">게임방 목록</button>
             </li>
             <li>
-              <button class="link-button" data-url="/channel/4.html">
-                광장 대화
-              </button>
+              <button class="groupChat">단체 채팅</button>
             </li>
           </ol>
         </div>
-        <div class="box-contents">
-          <p>컨텐츠</p>
-        </div>
+        <div id="content" class="box-contents">hi</div>
       </section>
     </div>
     <div class="bottomBar">
       <p>바텀</p>
     </div>
-
     <script>
-      const buttons = document.querySelectorAll(".link-button");
-      const contents = document.querySelector(".box-contents");
+      var groupChatButton = document.querySelector(".groupChat");
+      var chatContainer = document.querySelector(".box-contents");
 
-      buttons.forEach((button) => {
-        button.addEventListener("click", function (e) {
-          e.preventDefault();
-          const url = this.getAttribute("data-url");
+      groupChatButton.addEventListener("click", function () {
+        fetch("channel/group.html")
+          .then((response) => response.text())
+          .then((html) => {
+            // 가져온 HTML 파일을 DOM으로 파싱하기
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
 
-          fetch(url)
-            .then((response) => response.text())
-            .then((data) => {
-              contents.innerHTML = data;
-            })
-            .catch((error) => {
-              console.error(error);
+            console.log(3333);
+
+            // 이벤트 리스너 등록하기
+            const showAlert = doc.querySelector(".showAlert");
+            showAlert.addEventListener("click", function () {
+              alert("hello");
             });
-        });
+
+            // DOM 요소를 현재 문서에 추가하기
+            document.getElementById("content").appendChild(doc.documentElement);
+          })
+          .catch((error) => console.log(error));
       });
     </script>
   </body>
