@@ -24,7 +24,7 @@
               <button class="2">공지사항</button>
             </li>
             <li>
-              <button class="3">게임방 목록</button>
+              <button class="gameRoom">게임방 목록</button>
             </li>
             <li>
               <button class="groupChat">단체 채팅</button>
@@ -37,31 +37,6 @@
     <div class="bottomBar">
       <p>바텀</p>
     </div>
-    <script>
-      var groupChatButton = document.querySelector(".groupChat");
-      var chatContainer = document.querySelector(".box-contents");
-
-      groupChatButton.addEventListener("click", function () {
-        fetch("channel/group.html")
-          .then((response) => response.text())
-          .then((html) => {
-            // 가져온 HTML 파일을 DOM으로 파싱하기
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-
-            console.log(3333);
-
-            // 이벤트 리스너 등록하기
-            const showAlert = doc.querySelector(".showAlert");
-            showAlert.addEventListener("click", function () {
-              alert("hello");
-            });
-
-            // DOM 요소를 현재 문서에 추가하기
-            document.getElementById("content").appendChild(doc.documentElement);
-          })
-          .catch((error) => console.log(error));
-      });
-    </script>
+    <script src="javascript/groupChat.js"></script>
   </body>
 </html>
