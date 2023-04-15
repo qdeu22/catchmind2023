@@ -79,6 +79,26 @@ io.on("connection", (socket) => {
   });
 });
 
+const groupChat = io.of("/groupChat");
+
+// room 네임스페이스에 대한 이벤트 리스너 등록
+groupChat.on("connection", (socket) => {
+  console.log("room 네임스페이스에 접속");
+
+  // chat message 이벤트 리스너 등록
+  socket.on("chat message", (message) => {
+    console.log("받은 메시지: " + message);
+
+    // 모든 클라이언트에게 메시지 전송
+    io.of("/groupChat").emit("chat message", message);
+  });
+
+  // 접속 해제 이벤트 리스너 등록
+  socket.on("disconnect", () => {
+    console.log("room 네임스페이스 접속 해제");
+  });
+});
+
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

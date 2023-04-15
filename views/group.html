@@ -1,6 +1,21 @@
-<body>
-  <div>
-    <input type="text" class="" />
-    <button class="showAlert">버튼</button>
+<div class="wrapper">
+  <div class="user-container">
+    <label for="nickname">대화명</label>
+    <input type="text" id="nickname" />
   </div>
-</body>
+  <div class="display-container">
+    <ul class="chatting-list">
+      <!--  -->
+    </ul>
+  </div>
+  <div class="input-container">
+    <span>
+      <input type="text" class="chatting-input" />
+      <button class="send-button">전송</button>
+    </span>
+  </div>
+</div>
+<link rel="stylesheet" href="/stylesheets/groupChat.css" />
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/chat.js"></script>
