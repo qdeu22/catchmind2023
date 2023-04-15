@@ -64,7 +64,7 @@ app.get("/channel", isLoggedIn, function (req, res, next) {
 //   }
 //   res.sendFile(__dirname + `/views/${req.params.pageId}`);
 // });
-app.get("/channel/group.html", function (req, res, next) {
+app.get("/channel/group", function (req, res, next) {
   const username = req.user ? req.user.displayName : null;
   res.render("group", { username });
 });
@@ -95,8 +95,13 @@ groupChat.on("connection", (socket) => {
   socket.on("chat message", (message) => {
     console.log("받은 메시지: " + message);
 
+    const param = {
+      name: username,
+      msg: message,
+    };
+
     // 모든 클라이언트에게 메시지 전송
-    io.of("/groupChat").emit("chat message", message);
+    io.of("/groupChat").emit("chat message", param);
   });
 
   // 접속 해제 이벤트 리스너 등록

@@ -102,9 +102,9 @@ body {
   flex-direction: row-reverse;
   float: right;
 }
-.sent .message {
+.sent {
   background: #ffeb33;
 }
-.received .message {
+.received {
   background: #fff;
 }
