@@ -51,22 +51,9 @@ app.get("/channel", isLoggedIn, function (req, res, next) {
   username = req.user.displayName;
   res.sendFile(__dirname + "/views/channel.html");
 });
-
-// app.get("/channel/:pageId", function (req, res, next) {
-//   if (req.headers.referer !== "http://localhost:3000/channel") {
-//     // 이전 페이지가 특정한 URL이 아닌 경우
-//     return res.send(
-//       `<script>
-//          alert('잘못된 접근입니다.');
-//          history.back();
-//       </script >`
-//     );
-//   }
-//   res.sendFile(__dirname + `/views/${req.params.pageId}`);
-// });
 app.get("/channel/group", function (req, res, next) {
   const username = req.user ? req.user.displayName : null;
-  res.render("group", { username });
+  res.sendFile(__dirname + "/views/groupChat.html");
 });
 app.get("/channel/room.html", function (req, res, next) {
   res.sendFile(__dirname + "/views/room.html");
