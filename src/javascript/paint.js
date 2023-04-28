@@ -1,3 +1,5 @@
+const socket = io();
+
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -25,6 +27,8 @@ function onMouseMove(event) {
   } else {
     ctx.lineTo(x, y);
     ctx.stroke();
+    // 서버로 그린 데이터 전송
+    socket.emit("draw", { x, y });
   }
 }
 
@@ -33,4 +37,11 @@ if (canvas) {
   canvas.addEventListener("mousedown", startPainting);
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
+}
+
+socket.on("draw", onDraw);
+
+function onDraw(data) {
+  ctx.lineTo(data.x, data.y);
+  ctx.stroke();
 }

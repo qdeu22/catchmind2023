@@ -75,6 +75,20 @@ app.get("/logout", isLoggedIn, function (req, res, next) {
   });
 });
 
-app.listen(port, () => {
+// 소켓 연결
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("draw", (data) => {
+    console.log(data);
+    socket.broadcast.emit("draw", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
+
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
