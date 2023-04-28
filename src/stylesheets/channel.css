@@ -1,0 +1,44 @@
+:root {
+  --gap: 10px;
+}
+ol {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.link-button {
+  margin: 10px;
+  padding: 10px;
+}
+body {
+  background-color: #efefef;
+}
+
+.navBar {
+  background-color: #ddd;
+  padding: var(--gap);
+  flex-shrink: 0;
+}
+.box {
+  background-color: #ddd;
+  padding: var(--gap);
+  display: flex;
+  gap: var(--gap);
+  min-height: 800px; /*박스의 최소높이 줌*/
+  flex-direction: row;
+}
+.box-navbar,
+.box-sidebar,
+.box-contents {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: var(--gap);
+}
+.box-sidebar {
+  width: 140px; /*이 고정사이드바가 언제나 이 크기 유지는 안됌...*/
+  flex-shrink: 0; /*축소가 되는 비율...*/
+}
+
+.box-contents {
+  flex-grow: 1; /*사용가능 공간 전부 씀*/
+  min-width: 0; /*최소 사이즈*/
+}

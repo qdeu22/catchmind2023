@@ -50,6 +50,9 @@ app.get("/", (req, res) => {
 app.get("/login", function (req, res, next) {
   res.render("login", {});
 });
+app.get("/channel", isLoggedIn, function (req, res, next) {
+  res.sendFile(__dirname + "/views/channel.html");
+});
 
 app.get(
   "/login/google",
