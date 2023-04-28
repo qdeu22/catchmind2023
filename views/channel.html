@@ -3,8 +3,8 @@
   <head>
     <title>게임접속</title>
     <link rel="stylesheet" href="/stylesheets/channel.css" />
+    <link rel="stylesheet" href="/stylesheets/paint.css" />
     <script src="/socket.io/socket.io.js"></script>
-    <script src="javascript/channel.js"></script>
   </head>
 
   <body>
@@ -18,7 +18,8 @@
         <!-- <div class="box-sidebar">
       </div> -->
         <div class="box-contents">
-          <div id="chatContainer"></div>
+          <canvas id="jsCanvas" class="canvas"></canvas>
+          <script src="/javascript/paint.js"></script>
         </div>
       </section>
     </div>
