@@ -1,0 +1,46 @@
+.chat-input {
+  display: inline-block;
+  vertical-align: top;
+}
+.chat {
+  list-style: none; /* 리스트 기본 스타일 제거 */
+  width: 300px;
+  height: 400px;
+  padding: 0;
+  margin: 0;
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+.message {
+  background-color: #fff;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+button[type="submit"] {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  background-color: #f8f8f8;
+}
+input[type="text"] {
+  flex-grow: 1;
+  margin-right: 0.5rem;
+}
+
+button[type="submit"] {
+  color: #fff;
+  background-color: #007bff;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #0062cc;
+}

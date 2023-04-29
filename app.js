@@ -30,12 +30,6 @@ app.use(passport.session()); //+
 
 app.use(express.static(path.join(__dirname, "src")));
 
-var indexRouter = require("./routes/index");
-var loginRouter = require("./routes/login");
-
-app.use("/", indexRouter);
-app.use("/login", loginRouter);
-
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -46,45 +40,74 @@ function isLoggedIn(req, res, next) {
   });
 }
 
-var username = null;
+app.get("/", (req, res) => {
+  const title = "캐치마인드";
+  const isLoggedIn = !!req.user;
+  const username = req.user ? req.user.emails[0].value : null;
+  res.render("index", { title, isLoggedIn, username });
+});
+
+app.get("/login", function (req, res, next) {
+  res.render("login", {});
+});
 app.get("/channel", isLoggedIn, function (req, res, next) {
-  username = req.user.displayName;
   res.sendFile(__dirname + "/views/channel.html");
 });
-app.get("/channel/group", function (req, res, next) {
-  const username = req.user ? req.user.displayName : null;
-  res.sendFile(__dirname + "/views/groupChat.html");
-});
-app.get("/channel/room.html", function (req, res, next) {
-  res.sendFile(__dirname + "/views/room.html");
-});
 
-// 방문자 수 저장 변수
-let visitors = 0;
+app.get(
+  "/login/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
-// 소켓 연결
-io.on("connection", (socket) => {
-  // 새로운 방문자 접속 시 visitors 변수를 증가시키고, 모든 클라이언트에게 방문자 수를 전달합니다.
-  visitors++;
-  io.emit("visitorsUpdated", visitors);
+app.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/fail" }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect("/");
+  }
+);
 
-  // 방문자가 연결을 끊을 때마다 visitors 변수를 감소시키고, 모든 클라이언트에게 방문자 수를 전달합니다.
-  socket.on("disconnect", () => {
-    visitors--;
-    io.emit("visitorsUpdated", visitors);
+app.get("/logout", isLoggedIn, function (req, res, next) {
+  req.logout(function (err) {
+    if (err) return next(err);
+    res.redirect("/");
   });
 });
 
-const groupChat = io.of("/groupChat");
-// groupChat 네임스페이스에 대한 이벤트 리스너 등록
-groupChat.on("connection", (socket) => {
-  console.log("groupChat 네임스페이스에 접속");
+// GET 요청을 받아들이고 응답을 반환하는 API 엔드포인트
+app.get("/chat", (req, res) => {
+  const data = { key: req.user.displayName }; // 응답으로 보낼 데이터
+  res.json(data); // 데이터를 JSON 형태로 반환
+});
+const canvasIO = io.of("/canvas");
+
+// 소켓 연결
+canvasIO.on("connection", (socket) => {
+  console.log("canvas connected");
+
+  socket.on("draw", (data) => {
+    // console.log(data);
+    socket.broadcast.emit("draw", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("canvas disconnected");
+  });
 });
 
-const room = io.of("/room");
-// room 네임스페이스에 대한 이벤트 리스너 등록
-room.on("connection", (socket) => {
-  console.log("room 네임스페이스에 접속");
+// 채팅 연결
+const chatIO = io.of("/chat");
+chatIO.on("connection", (socket) => {
+  console.log("A user connected to chat");
+
+  // 클라이언트에서 message 이벤트를 받으면 다른 클라이언트에게 메시지를 전송
+  socket.on("message", (data) => {
+    socket.broadcast.emit("message", data);
+  });
+  socket.on("disconnect", () => {
+    console.log("chat disconnected");
+  });
 });
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

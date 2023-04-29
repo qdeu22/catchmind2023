@@ -3,44 +3,37 @@
   <head>
     <title>게임접속</title>
     <link rel="stylesheet" href="/stylesheets/channel.css" />
+    <link rel="stylesheet" href="/stylesheets/paint.css" />
+    <link rel="stylesheet" href="/stylesheets/chat.css" />
     <script src="/socket.io/socket.io.js"></script>
-    <script src="javascript/channel.js"></script>
   </head>
 
   <body>
     <div class="navBar">
       <div class="box-navbar">
-        <p id="visitors"></p>
+        <h1>방가방가</h1>
       </div>
     </div>
     <div class="container">
       <section class="box">
-        <div class="box-sidebar">
-          <ol>
-            <li>
-              <button class="1">이용안내</button>
-            </li>
-            <li>
-              <button class="2">공지사항</button>
-            </li>
-            <li>
-              <button class="gameRoom" onclick="roomButtons()">
-                게임방 목록
-              </button>
-            </li>
-            <li>
-              <button class="groupChat" onclick="groupChatButtons()">
-                단체 채팅
-              </button>
-            </li>
-          </ol>
+        <!-- <div class="box-sidebar">
+      </div> -->
+        <div class="box-contents">
+          <canvas id="jsCanvas" class="canvas"></canvas>
+          <script src="/javascript/paint.js"></script>
+          <div class="chat-input">
+            <ul class="chat"></ul>
+            <form>
+              <input type="text" placeholder="메시지를 입력하세요" />
+              <button type="submit">전송</button>
+            </form>
+            <script src="/javascript/chat.js"></script>
+          </div>
         </div>
-        <div id="content" class="box-contents">hi</div>
       </section>
     </div>
     <div class="bottomBar">
       <p>바텀</p>
     </div>
-    <script src="javascript/groupChat.js"></script>
   </body>
 </html>
