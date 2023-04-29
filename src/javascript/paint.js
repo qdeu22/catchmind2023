@@ -24,11 +24,13 @@ function onMouseMove(event) {
   if (!painting) {
     ctx.beginPath();
     ctx.moveTo(x, y);
+    // 서버로 새로운 경로를 시작한다는 신호 전송
+    socket.emit("draw", { x, y, start: true });
   } else {
     ctx.lineTo(x, y);
     ctx.stroke();
     // 서버로 그린 데이터 전송
-    socket.emit("draw", { x, y });
+    socket.emit("draw", { x, y, start: false });
   }
 }
 
@@ -42,6 +44,11 @@ if (canvas) {
 socket.on("draw", onDraw);
 
 function onDraw(data) {
-  ctx.lineTo(data.x, data.y);
-  ctx.stroke();
+  if (data.start) {
+    ctx.beginPath();
+    ctx.moveTo(data.x, data.y);
+  } else {
+    ctx.lineTo(data.x, data.y);
+    ctx.stroke();
+  }
 }
