@@ -1,3 +1,5 @@
+const chatSocket = io("/chat");
+
 const form = document.querySelector("form");
 const input = document.querySelector('input[type="text"]');
 const ul = document.querySelector("ul");
@@ -22,8 +24,18 @@ form.addEventListener("submit", (event) => {
         li.classList.add("message"); // message 클래스 추가
         ul.appendChild(li); // 리스트에 아이템 추가
         input.value = "";
+        chatSocket.emit("message", { name, message });
         scrollToBottom(); // 스크롤을 최하단으로 내림
       }
     }) // 서버로부터 받은 데이터 처리
     .catch((error) => console.error("Error:", error));
 });
+
+chatSocket.on("message", onChat);
+
+function onChat(data) {
+  const li = document.createElement("li"); // 새로운 리스트 아이템 생성
+  li.textContent = `${data.name}: ${data.message}`; // 리스트 아이템에 메시지 추가
+  li.classList.add("message"); // message 클래스 추가
+  ul.appendChild(li); // 리스트에 아이템 추가
+}

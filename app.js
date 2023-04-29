@@ -80,10 +80,11 @@ app.get("/chat", (req, res) => {
   const data = { key: req.user.displayName }; // 응답으로 보낼 데이터
   res.json(data); // 데이터를 JSON 형태로 반환
 });
+const canvasIO = io.of("/canvas");
 
 // 소켓 연결
-io.on("connection", (socket) => {
-  console.log("a user connected");
+canvasIO.on("connection", (socket) => {
+  console.log("canvas connected");
 
   socket.on("draw", (data) => {
     // console.log(data);
@@ -91,10 +92,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log("canvas disconnected");
   });
 });
 
+// 채팅 연결
+const chatIO = io.of("/chat");
+chatIO.on("connection", (socket) => {
+  console.log("A user connected to chat");
+
+  // 클라이언트에서 message 이벤트를 받으면 다른 클라이언트에게 메시지를 전송
+  socket.on("message", (data) => {
+    socket.broadcast.emit("message", data);
+  });
+  socket.on("disconnect", () => {
+    console.log("chat disconnected");
+  });
+});
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
