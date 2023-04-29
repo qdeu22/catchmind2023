@@ -43,7 +43,7 @@ function isLoggedIn(req, res, next) {
 app.get("/", (req, res) => {
   const title = "캐치마인드";
   const isLoggedIn = !!req.user;
-  const username = req.user ? req.user.displayName : null;
+  const username = req.user ? req.user.emails[0].value : null;
   res.render("index", { title, isLoggedIn, username });
 });
 
@@ -56,7 +56,7 @@ app.get("/channel", isLoggedIn, function (req, res, next) {
 
 app.get(
   "/login/google",
-  passport.authenticate("google", { scope: ["profile"] })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 app.get(
