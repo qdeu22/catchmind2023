@@ -106,7 +106,7 @@ chatIO.on("connection", (socket) => {
   });
 
   socket.on("members", () => {
-    socket.broadcast.emit("members", chat_members);
+    socket.emit("members", chat_members);
   });
   socket.on("disconnect", () => {
     chat_members--;
