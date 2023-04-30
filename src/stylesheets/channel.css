@@ -28,7 +28,6 @@ body {
   flex-direction: row;
 }
 .box-navbar,
-.box-sidebar,
 .box-contents {
   background-color: rgba(0, 0, 0, 0.2);
   padding: var(--gap);
@@ -41,4 +40,20 @@ body {
 .box-contents {
   flex-grow: 1; /*사용가능 공간 전부 씀*/
   min-width: 0; /*최소 사이즈*/
+}
+
+.userlist {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.user-list {
+  list-style: none; /* 리스트 기본 스타일 제거 */
+  width: 150px;
+  height: 350px;
+  padding: 0;
+  margin: 0;
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }

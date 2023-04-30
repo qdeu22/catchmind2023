@@ -50,3 +50,21 @@ function onMembers(data) {
   const chat_members = document.querySelector(".chat-members");
   chat_members.textContent = `현재 접속자 ${data}명`;
 }
+chatSocket.emit("userlist", { username });
+chatSocket.on("userlist", onUserList);
+
+function onUserList(data) {
+  const chat_members = document.querySelector(".user-list");
+
+  // chat_members의 자식 노드들을 모두 제거
+  while (chat_members.firstChild) {
+    chat_members.removeChild(chat_members.firstChild);
+  }
+
+  // data 배열에 있는 값들을 반복하여 li 태그에 추가
+  data.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = `${item}님 획득 점수: ${null}`;
+    chat_members.appendChild(li);
+  });
+}
