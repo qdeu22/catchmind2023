@@ -4,7 +4,7 @@
 }
 .chat {
   list-style: none; /* 리스트 기본 스타일 제거 */
-  width: 300px;
+  width: 600px;
   height: 400px;
   padding: 0;
   margin: 0;
@@ -12,6 +12,9 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   overflow-y: auto;
+}
+.chat-username {
+  width: 300px;
 }
 
 .message {
@@ -27,7 +30,7 @@ button[type="submit"] {
   padding: 0.5rem;
   border: none;
   border-radius: 0.25rem;
-  font-size: 1rem;
+  font-size: 2.2rem;
   background-color: #f8f8f8;
 }
 input[type="text"] {

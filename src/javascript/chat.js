@@ -6,13 +6,16 @@ const ul = document.querySelector("ul");
 
 const username = prompt("닉네임을 입력하세요.");
 
-if (username === null) {
+if (username === null || username === "") {
   window.location.href = "/";
 }
 
 function scrollToBottom() {
   ul.scrollTop = ul.scrollHeight;
 }
+
+const chat_username = document.querySelector(".chat-username");
+chat_username.textContent = `${username}님 반갑습니다!!`;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault(); // 폼 기본 동작 방지
