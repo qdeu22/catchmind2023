@@ -31,6 +31,7 @@ app.use(passport.session()); //+
 app.use(express.static(path.join(__dirname, "src")));
 
 function isLoggedIn(req, res, next) {
+  return next(); // 임시적으로!
   if (req.isAuthenticated()) {
     return next();
   }
@@ -75,11 +76,6 @@ app.get("/logout", isLoggedIn, function (req, res, next) {
   });
 });
 
-// GET 요청을 받아들이고 응답을 반환하는 API 엔드포인트
-app.get("/chat", (req, res) => {
-  const data = { key: req.user.displayName }; // 응답으로 보낼 데이터
-  res.json(data); // 데이터를 JSON 형태로 반환
-});
 const canvasIO = io.of("/canvas");
 
 // 소켓 연결
