@@ -106,13 +106,15 @@ chatIO.on("connection", (socket) => {
   });
 
   socket.on("members", () => {
-    socket.emit("members", chat_members);
+    chatIO.emit("members", chat_members);
   });
   socket.on("disconnect", () => {
     chat_members--;
+    chatIO.emit("members", chat_members);
     console.log("chat disconnected");
   });
 });
+
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
