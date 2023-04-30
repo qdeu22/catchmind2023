@@ -92,16 +92,24 @@ canvasIO.on("connection", (socket) => {
   });
 });
 
+var chat_members = 0;
+
 // 채팅 연결
 const chatIO = io.of("/chat");
 chatIO.on("connection", (socket) => {
   console.log("A user connected to chat");
 
+  chat_members++;
   // 클라이언트에서 message 이벤트를 받으면 다른 클라이언트에게 메시지를 전송
   socket.on("message", (data) => {
     socket.broadcast.emit("message", data);
   });
+
+  socket.on("members", () => {
+    socket.broadcast.emit("members", chat_members);
+  });
   socket.on("disconnect", () => {
+    chat_members--;
     console.log("chat disconnected");
   });
 });

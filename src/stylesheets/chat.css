@@ -15,8 +15,11 @@
 }
 .chat-top {
   width: 600px;
+  display: flex;
+  align-items: center; /* 수직 정렬 */
 }
-.chat-username {
+.chat-username,
+.chat-members {
   width: 300px;
 }
 
