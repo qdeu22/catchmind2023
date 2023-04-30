@@ -13,6 +13,9 @@
   border-radius: 5px;
   overflow-y: auto;
 }
+.chat-top {
+  width: 600px;
+}
 .chat-username {
   width: 300px;
 }
