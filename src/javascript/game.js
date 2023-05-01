@@ -38,6 +38,14 @@ function startGame() {
 
       chatSocket.emit("game-start");
       canvasSocket.emit("game-start");
+
+      var suggested_word = document.getElementById("suggested-word");
+      fetch("/getWord")
+        .then((response) => response.json())
+        .then((data) => {
+          suggested_word.innerText = data.message;
+        })
+        .catch((error) => console.error(error));
     }
   }, 1000);
 }

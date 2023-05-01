@@ -21,6 +21,16 @@ app.get("/channel", function (req, res) {
   res.sendFile(__dirname + "/views/channel.html");
 });
 
+const wordModule = require("./lib/file");
+
+// getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
+const randomWord = wordModule.getRandomWord().trim();
+
+app.get("/getWord", (req, res) => {
+  const data = { message: randomWord };
+  res.json(data);
+});
+
 const canvasIO = io.of("/canvas");
 
 // 소켓 연결
