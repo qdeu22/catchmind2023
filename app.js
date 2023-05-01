@@ -32,6 +32,10 @@ canvasIO.on("connection", (socket) => {
     socket.broadcast.emit("draw", data);
   });
 
+  socket.on("game-start", () => {
+    socket.broadcast.emit("game-start");
+  });
+
   socket.on("disconnect", () => {
     console.log("canvas disconnected");
   });
@@ -63,6 +67,10 @@ chatIO.on("connection", (socket) => {
     username = data.username;
     connectedUserList.push(username);
     chatIO.emit("userlist", connectedUserList);
+  });
+
+  socket.on("game-start", () => {
+    socket.broadcast.emit("game-start");
   });
 
   socket.on("disconnect", () => {

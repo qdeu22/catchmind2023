@@ -52,3 +52,10 @@ function onDraw(data) {
     ctx.stroke();
   }
 }
+
+canvasSocket.on("game-start", onCanvasInit);
+
+function onCanvasInit() {
+  //캔버스 초기화
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}

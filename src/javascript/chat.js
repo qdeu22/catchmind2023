@@ -68,3 +68,23 @@ function onUserList(data) {
     chat_members.appendChild(li);
   });
 }
+
+chatSocket.on("game-start", onChatInit);
+
+function onChatInit() {
+  /**
+   * 채팅 모든 글자 클리어
+   */
+  while (ul.firstChild) {
+    // ul의 자식 노드가 존재하는 동안
+    ul.removeChild(ul.firstChild); // ul의 첫 번째 자식 노드를 삭제
+  }
+
+  /**
+   * 게임시작 문구 출력
+   */
+  const li = document.createElement("li"); // 새로운 리스트 아이템 생성
+  li.textContent = "게임이 시작되었습니다."; // 리스트 아이템에 메시지 추가
+  li.classList.add("message"); // message 클래스 추가
+  ul.appendChild(li); // 리스트에 아이템 추가
+}
