@@ -32,6 +32,8 @@ function startGame() {
       console.log("게임이 시작됩니다!");
       // 게임을 실행하는 코드를 여기에 작성합니다.
 
+      startTimer();
+
       //캔버스와 채팅 초기화
       onCanvasInit();
       onChatInit();
@@ -54,4 +56,5 @@ function cancelGame() {
   clearInterval(countdown); // interval을 멈춥니다.
   countdown = null; // countdown 변수를 null로 초기화합니다.
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
+  stopTimer();
 }
