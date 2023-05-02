@@ -42,10 +42,6 @@ canvasIO.on("connection", (socket) => {
     socket.broadcast.emit("draw", data);
   });
 
-  socket.on("game-start", () => {
-    socket.broadcast.emit("game-start", { drawingToolStatus: true });
-  });
-
   socket.on("disconnect", () => {
     console.log("canvas disconnected");
   });
@@ -95,6 +91,44 @@ chatIO.on("connection", (socket) => {
     chatIO.emit("userlist", connectedUserList);
 
     console.log("chat disconnected");
+  });
+});
+
+const gameIO = io.of("/game");
+
+// 연결된 사용자 정보 저장
+const users = {};
+
+gameIO.on("connection", (socket) => {
+  console.log("game User connected: " + socket.id);
+
+  // 사용자 정보 저장
+  socket.on("register", (data) => {
+    socket.data.username = data.username;
+    users[data.username] = socket.id;
+    console.log("User registered: " + socket.data.username);
+    console.log("register", users);
+  });
+
+  socket.on("gameStart", (data) => {
+    gameIO.emit("gameStart");
+  });
+
+  socket.on("gameEnd", (data) => {
+    gameIO.emit("gameEnd");
+  });
+
+  // 소켓 연결 종료 시
+  socket.on("disconnect", () => {
+    console.log("User disconnected: " + socket.id);
+
+    // 연결된 사용자 정보에서 제거
+    if (socket.data.username) {
+      delete users[socket.data.username];
+      console.log("User unregistered: " + socket.data.username);
+
+      console.log("disconnect", users);
+    }
   });
 });
 

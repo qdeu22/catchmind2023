@@ -1,3 +1,6 @@
+var gameSocket = io("/game");
+
+gameSocket.emit("register", { username });
 // 게임 시작 버튼을 클릭하면 startGame 함수를 실행합니다.
 var start_button = document.getElementById("start-button");
 
@@ -39,7 +42,8 @@ function startGame() {
       onChatInit();
 
       chatSocket.emit("game-start");
-      canvasSocket.emit("game-start");
+
+      gameSocket.emit("gameStart");
 
       var suggested_word = document.getElementById("suggested-word");
       fetch("/getWord")
@@ -57,4 +61,29 @@ function cancelGame() {
   countdown = null; // countdown 변수를 null로 초기화합니다.
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
   stopTimer();
+  endTurn();
+}
+
+// 서버에서 'startTurn' 메시지를 받으면, 해당 사용자의 턴이 시작되었다는 것을 처리합니다.
+gameSocket.on("gameStart", onTurn);
+function onTurn() {
+  // 여기서 해당 사용자의 화면을 업데이트합니다.
+  var data = {
+    drawingToolStatus: true, // 예시 값
+  };
+  onCanvasInit(data);
+}
+
+gameSocket.on("gameEnd", gameEnd);
+
+function gameEnd() {
+  var data = {
+    drawingToolStatus: false, // 예시 값
+  };
+  onCanvasInit(data);
+}
+
+// 서버로 'endTurn' 메시지를 보내서 다음 사용자의 턴으로 전환합니다.
+function endTurn() {
+  gameSocket.emit("gameEnd");
 }
