@@ -61,12 +61,7 @@ function onDraw(data) {
   }
 }
 
-function onCanvasInit(data) {
+function onCanvasInit() {
   //캔버스 초기화
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // data에 값이 있지 않으면 실행 안됨
-  if (data) {
-    drawingTool = data.drawingToolStatus;
-  }
 }

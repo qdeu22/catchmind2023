@@ -97,7 +97,11 @@ chatIO.on("connection", (socket) => {
 const gameIO = io.of("/game");
 
 // 연결된 사용자 정보 저장
-const users = {};
+const users = new Map();
+
+var currentIndex = 0;
+
+var next_player;
 
 gameIO.on("connection", (socket) => {
   console.log("game User connected: " + socket.id);
@@ -105,7 +109,7 @@ gameIO.on("connection", (socket) => {
   // 사용자 정보 저장
   socket.on("register", (data) => {
     socket.data.username = data.username;
-    users[data.username] = socket.id;
+    users.set(data.username, socket.id);
     console.log("User registered: " + socket.data.username);
     console.log("register", users);
   });
@@ -117,6 +121,23 @@ gameIO.on("connection", (socket) => {
   socket.on("gameEnd", (data) => {
     gameIO.emit("gameEnd");
   });
+  socket.on("play", (data) => {
+    // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
+    next_player = Array.from(users.values())[currentIndex];
+    gameIO.to(next_player).emit("startTurn");
+  });
+
+  socket.on("change-player", () => {
+    // 다음 사용자 인덱스 계산 (순환)
+    currentIndex = (currentIndex + 1) % users.size;
+    console.log(next_player);
+    gameIO.to(next_player).emit("endTurn");
+
+    next_player = Array.from(users.values())[currentIndex];
+    console.log(next_player);
+    // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
+    gameIO.to(next_player).emit("startTurn");
+  });
 
   // 소켓 연결 종료 시
   socket.on("disconnect", () => {
@@ -124,9 +145,8 @@ gameIO.on("connection", (socket) => {
 
     // 연결된 사용자 정보에서 제거
     if (socket.data.username) {
-      delete users[socket.data.username];
+      users.delete(socket.data.username);
       console.log("User unregistered: " + socket.data.username);
-
       console.log("disconnect", users);
     }
   });

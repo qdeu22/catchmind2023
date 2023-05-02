@@ -67,23 +67,34 @@ function cancelGame() {
 // 서버에서 'startTurn' 메시지를 받으면, 해당 사용자의 턴이 시작되었다는 것을 처리합니다.
 gameSocket.on("gameStart", onTurn);
 function onTurn() {
-  // 여기서 해당 사용자의 화면을 업데이트합니다.
-  var data = {
-    drawingToolStatus: true, // 예시 값
-  };
-  onCanvasInit(data);
+  drawingTool = true;
+  onCanvasInit();
+
+  gameSocket.emit("play");
 }
 
 gameSocket.on("gameEnd", gameEnd);
 
 function gameEnd() {
-  var data = {
-    drawingToolStatus: false, // 예시 값
-  };
-  onCanvasInit(data);
+  drawingTool = false;
+  onCanvasInit();
 }
 
 // 서버로 'endTurn' 메시지를 보내서 다음 사용자의 턴으로 전환합니다.
 function endTurn() {
   gameSocket.emit("gameEnd");
+}
+
+gameSocket.on("startTurn", startTurn);
+
+function startTurn() {
+  drawingTool = false;
+  onCanvasInit();
+}
+
+gameSocket.on("endTurn", endTurn);
+
+function endTurn() {
+  drawingTool = true;
+  onCanvasInit();
 }

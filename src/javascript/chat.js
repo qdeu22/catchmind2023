@@ -32,6 +32,8 @@ form.addEventListener("submit", (event) => {
     input.value = "";
     chatSocket.emit("message", { name, message });
     scrollToBottom(); // 스크롤을 최하단으로 내림
+
+    gameSocket.emit("change-player"); //임시!
   }
 });
 
