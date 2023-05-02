@@ -43,7 +43,7 @@ canvasIO.on("connection", (socket) => {
   });
 
   socket.on("game-start", () => {
-    socket.broadcast.emit("game-start");
+    socket.broadcast.emit("game-start", { drawingToolStatus: true });
   });
 
   socket.on("disconnect", () => {

@@ -11,7 +11,12 @@ ctx.lineWidth = 2.5;
 
 let painting = false;
 
+var drawingTool = false;
+
 function startPainting() {
+  if (drawingTool) {
+    return;
+  }
   painting = true;
 }
 function stopPainting(event) {
@@ -19,6 +24,9 @@ function stopPainting(event) {
 }
 
 function onMouseMove(event) {
+  if (drawingTool) {
+    return;
+  }
   const x = event.offsetX;
   const y = event.offsetY;
   if (!painting) {
@@ -55,7 +63,12 @@ function onDraw(data) {
 
 canvasSocket.on("game-start", onCanvasInit);
 
-function onCanvasInit() {
+function onCanvasInit(data) {
   //캔버스 초기화
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // data에 값이 있지 않으면 실행 안됨
+  if (data) {
+    drawingTool = data.drawingToolStatus;
+  }
 }
