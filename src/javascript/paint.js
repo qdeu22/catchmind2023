@@ -11,14 +11,16 @@ ctx.lineWidth = 2.5;
 
 let painting = false;
 
-var drawingTool = false;
+var drawingTool = false; // 접속자들의 그릴 권한 통제
 
 function startPainting() {
   if (drawingTool) {
     return;
   }
+
   painting = true;
 }
+
 function stopPainting(event) {
   painting = false;
 }
@@ -27,16 +29,20 @@ function onMouseMove(event) {
   if (drawingTool) {
     return;
   }
+
   const x = event.offsetX;
   const y = event.offsetY;
+
   if (!painting) {
     ctx.beginPath();
     ctx.moveTo(x, y);
+
     // 서버로 새로운 경로를 시작한다는 신호 전송
     canvasSocket.emit("draw", { x, y, start: true });
   } else {
     ctx.lineTo(x, y);
     ctx.stroke();
+
     // 서버로 그린 데이터 전송
     canvasSocket.emit("draw", { x, y, start: false });
   }

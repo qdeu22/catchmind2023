@@ -118,6 +118,14 @@ gameIO.on("connection", (socket) => {
     gameIO.emit("gameStart");
   });
 
+  socket.on("gameStartCount", (data) => {
+    socket.broadcast.emit("gameStartCount", data);
+  });
+
+  socket.on("gameTimer", () => {
+    gameIO.emit("gameTimer");
+  });
+
   socket.on("gameEnd", (data) => {
     gameIO.emit("gameEnd");
   });
@@ -130,11 +138,15 @@ gameIO.on("connection", (socket) => {
   socket.on("change-player", () => {
     // 다음 사용자 인덱스 계산 (순환)
     currentIndex = (currentIndex + 1) % users.size;
+
     console.log(next_player);
+
     gameIO.to(next_player).emit("endTurn");
 
     next_player = Array.from(users.values())[currentIndex];
+
     console.log(next_player);
+
     // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
     gameIO.to(next_player).emit("startTurn");
   });
