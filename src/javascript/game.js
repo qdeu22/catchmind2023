@@ -2,6 +2,19 @@ var gameSocket = io("/game");
 
 gameSocket.emit("register", { username });
 
+setTimeout(() => {
+  fetch("/getReader")
+    .then((response) => response.json())
+    .then((data) => {
+      if (username === data.reader) {
+        start_button.disabled = false;
+      } else {
+        start_button.disabled = true;
+      }
+    })
+    .catch((error) => console.error(error));
+}, 3000);
+
 // 게임 시작 버튼을 클릭하면 startGame 함수를 실행합니다.
 var start_button = document.getElementById("start-button");
 
@@ -77,7 +90,7 @@ function onTurn() {
   drawingTool = true;
   onCanvasInit();
 
-  gameSocket.emit("play");
+  gameSocket.emit("host");
 }
 
 gameSocket.on("gameEnd", gameEnd);
