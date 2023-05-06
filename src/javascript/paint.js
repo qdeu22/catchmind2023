@@ -71,3 +71,7 @@ function onCanvasInit() {
   //캔버스 초기화
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
+
+function isPainterPaint() {
+  drawingTool = false; // 접속자들의 그릴 권한 통제
+}

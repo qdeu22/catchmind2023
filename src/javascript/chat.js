@@ -19,7 +19,7 @@ chat_username.textContent = `${username}님 반갑습니다!!`;
 
 chatSocket.emit("members");
 
-var isPlaying = false;
+var isPainter = true;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault(); // 폼 기본 동작 방지
@@ -35,11 +35,15 @@ form.addEventListener("submit", (event) => {
     chatSocket.emit("message", { name, message });
     scrollToBottom(); // 스크롤을 최하단으로 내림
 
-    if (isPlaying) {
+    if (!isPainter) {
       gameSocket.emit("change-player"); //임시!
     }
   }
 });
+
+function isPainterChat() {
+  isPainter = false; // 전부 초기화 , 그림그리는 사람은 채팅을 검사안한다는거지
+}
 
 chatSocket.on("message", onChat);
 

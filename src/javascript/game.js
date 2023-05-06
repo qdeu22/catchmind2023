@@ -38,21 +38,18 @@ function updateButtonText(count) {
 // 게임 시작 버튼을 클릭할 때 실행되는 함수
 function startGame() {
   let count = 5; // 초기 카운트는 5입니다.
-  updateButtonText(count); // 버튼의 텍스트를 5로 변경합니다.
+  gameSocket.emit("onCount", { count });
 
   // 1초마다 실행되는 함수
   countdown = setInterval(function () {
     count -= 1; // 카운트를 1씩 감소시킵니다.
-    updateButtonText(count); // 버튼의 텍스트를 갱신합니다.
 
-    gameSocket.emit("gameStartCount", { count });
+    gameSocket.emit("onCount", { count });
 
     if (count === 0) {
       clearInterval(countdown); // 카운트가 0이 되면 interval을 멈춥니다.
 
       // 게임을 실행하는 코드를 여기에 작성합니다.
-      isPlaying = true;
-
       gameSocket.emit("gameStart");
 
       var suggested_word = document.getElementById("suggested-word");
@@ -70,16 +67,18 @@ function cancelGame() {
   clearInterval(countdown); // interval을 멈춥니다.
   countdown = null; // countdown 변수를 null로 초기화합니다.
   gameSocket.emit("gameEnd");
-  isPlaying = false;
 }
 
 // 서버에서 'startTurn' 메시지를 받으면, 해당 사용자의 턴이 시작되었다는 것을 처리합니다.
-gameSocket.on("gameStart", onTurn);
-function onTurn() {
+gameSocket.on("gameStart", gameStart);
+function gameStart() {
   drawingTool = true;
   onCanvasInit();
   onChatInit();
   onTimer();
+
+  isPainterChat();
+  isPainterPaint();
 
   gameSocket.emit("host");
 }
@@ -90,6 +89,9 @@ function gameEnd() {
   drawingTool = false;
   onCanvasInit();
   stopTimer();
+
+  isPainter = true;
+  isPainterPaint();
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
 }
 
@@ -107,8 +109,8 @@ function endTurn() {
   onCanvasInit();
 }
 
-gameSocket.on("gameStartCount", onCount);
+gameSocket.on("onCount", onCount);
 
 function onCount(data) {
-  updateButtonText(data.count);
+  updateButtonText(data.count); // 버튼의 텍스트를 갱신합니다.
 }

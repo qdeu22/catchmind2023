@@ -23,8 +23,8 @@ module.exports = function (io) {
       gameIO.emit("gameStart");
     });
 
-    socket.on("gameStartCount", (data) => {
-      socket.broadcast.emit("gameStartCount", data);
+    socket.on("onCount", (data) => {
+      gameIO.emit("onCount", data);
     });
 
     socket.on("gameEnd", (data) => {
