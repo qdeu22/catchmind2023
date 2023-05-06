@@ -22,3 +22,7 @@ function stopTimer() {
   time = 0;
   document.getElementById("timer").innerHTML = "00:00:00";
 }
+
+function onTimer() {
+  startTimer();
+}

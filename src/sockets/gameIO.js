@@ -27,13 +27,10 @@ module.exports = function (io) {
       socket.broadcast.emit("gameStartCount", data);
     });
 
-    socket.on("gameTimer", () => {
-      gameIO.emit("gameTimer");
-    });
-
     socket.on("gameEnd", (data) => {
       gameIO.emit("gameEnd");
     });
+
     socket.on("host", (data) => {
       host = Array.from(users.values())[0];
       gameIO.to(host).emit("startTurn");

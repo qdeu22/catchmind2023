@@ -49,18 +49,9 @@ function startGame() {
 
     if (count === 0) {
       clearInterval(countdown); // 카운트가 0이 되면 interval을 멈춥니다.
-      console.log("게임이 시작됩니다!");
+
       // 게임을 실행하는 코드를 여기에 작성합니다.
-
       isPlaying = true;
-
-      gameSocket.emit("gameTimer");
-
-      //캔버스와 채팅 초기화
-      onCanvasInit();
-      onChatInit();
-
-      chatSocket.emit("game-start");
 
       gameSocket.emit("gameStart");
 
@@ -78,8 +69,6 @@ function startGame() {
 function cancelGame() {
   clearInterval(countdown); // interval을 멈춥니다.
   countdown = null; // countdown 변수를 null로 초기화합니다.
-  start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
-  stopTimer();
   gameSocket.emit("gameEnd");
   isPlaying = false;
 }
@@ -89,6 +78,8 @@ gameSocket.on("gameStart", onTurn);
 function onTurn() {
   drawingTool = true;
   onCanvasInit();
+  onChatInit();
+  onTimer();
 
   gameSocket.emit("host");
 }
@@ -98,6 +89,8 @@ gameSocket.on("gameEnd", gameEnd);
 function gameEnd() {
   drawingTool = false;
   onCanvasInit();
+  stopTimer();
+  start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
 }
 
 gameSocket.on("startTurn", startTurn);
@@ -118,10 +111,4 @@ gameSocket.on("gameStartCount", onCount);
 
 function onCount(data) {
   updateButtonText(data.count);
-}
-
-gameSocket.on("gameTimer", onTimer);
-
-function onTimer() {
-  startTimer();
 }

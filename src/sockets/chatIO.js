@@ -25,10 +25,6 @@ module.exports = function (io) {
       chatIO.emit("userlist", connectedUserList);
     });
 
-    socket.on("game-start", () => {
-      socket.broadcast.emit("game-start");
-    });
-
     socket.on("disconnect", () => {
       chat_members--;
       chatIO.emit("members", chat_members);
