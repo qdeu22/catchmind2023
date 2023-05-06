@@ -74,9 +74,6 @@ function onUserList(data) {
     chat_members.appendChild(li);
   });
 }
-
-chatSocket.on("game-start", onChatInit);
-
 function onChatInit() {
   /**
    * 채팅 모든 글자 클리어
