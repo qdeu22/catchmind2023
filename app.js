@@ -23,10 +23,11 @@ app.get("/channel", function (req, res) {
 
 const wordModule = require("./lib/file");
 
-// getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
-const randomWord = wordModule.getRandomWord().trim();
+var randomWord;
 
-app.get("/getWord", (req, res) => {
+app.get("/getRandomWord", (req, res) => {
+  // getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
+  randomWord = wordModule.getRandomWord().trim();
   const data = { message: randomWord };
   res.json(data);
 });

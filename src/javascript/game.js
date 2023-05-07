@@ -51,14 +51,6 @@ function startGame() {
 
       // 게임을 실행하는 코드를 여기에 작성합니다.
       gameSocket.emit("gameStart");
-
-      var suggested_word = document.getElementById("suggested-word");
-      fetch("/getWord")
-        .then((response) => response.json())
-        .then((data) => {
-          suggested_word.innerText = data.message;
-        })
-        .catch((error) => console.error(error));
     }
   }, 1000);
 }
@@ -100,13 +92,30 @@ gameSocket.on("currentPlayer", currentPlayer);
 function currentPlayer() {
   isPainter = true;
   drawingTool = false;
+
+  // 서버에서 단어 가지고 옴
+  getWord();
 }
+
+function getWord() {
+  var suggested_word = document.getElementById("suggested-word");
+  fetch("/getRandomWord")
+    .then((response) => response.json())
+    .then((data) => {
+      suggested_word.innerText = data.message;
+    })
+    .catch((error) => console.error(error));
+}
+
 gameSocket.on("exchange", onExchange);
 
 function onExchange() {
   isPainterChat();
   isPainterPaint();
   onCanvasInit();
+
+  var suggested_word = document.getElementById("suggested-word");
+  suggested_word.innerText = "-";
 }
 
 gameSocket.on("onCount", onCount);
