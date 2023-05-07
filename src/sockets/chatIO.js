@@ -25,6 +25,10 @@ module.exports = function (io) {
       chatIO.emit("userlist", connectedUserList);
     });
 
+    socket.on("correct-player", (data) => {
+      chatIO.emit("correct-player", { username: data.username });
+    });
+
     socket.on("disconnect", () => {
       chat_members--;
       chatIO.emit("members", chat_members);
