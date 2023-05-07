@@ -33,19 +33,21 @@ module.exports = function (io) {
 
     socket.on("host", (data) => {
       host = Array.from(users.values())[0];
-      gameIO.to(host).emit("startTurn");
+      gameIO.to(host).emit("currentPlayer");
     });
 
     socket.on("change-player", () => {
       // 다음 사용자 인덱스 계산 (순환)
-      currentIndex = (currentIndex + 1) % users.size;
 
-      gameIO.to(next_player).emit("endTurn");
+      // 모든 접속자에게 공통으로 변경사항
+      gameIO.emit("exchange");
+
+      currentIndex = (currentIndex + 1) % users.size;
 
       next_player = Array.from(users.values())[currentIndex];
 
       // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
-      gameIO.to(next_player).emit("startTurn");
+      gameIO.to(next_player).emit("currentPlayer");
     });
 
     // 소켓 연결 종료 시

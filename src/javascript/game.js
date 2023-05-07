@@ -95,17 +95,17 @@ function gameEnd() {
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
 }
 
-gameSocket.on("startTurn", startTurn);
+gameSocket.on("currentPlayer", currentPlayer);
 
-function startTurn() {
+function currentPlayer() {
+  isPainter = true;
   drawingTool = false;
-  onCanvasInit();
 }
+gameSocket.on("exchange", onExchange);
 
-gameSocket.on("endTurn", endTurn);
-
-function endTurn() {
-  drawingTool = true;
+function onExchange() {
+  isPainterChat();
+  isPainterPaint();
   onCanvasInit();
 }
 

@@ -73,5 +73,5 @@ function onCanvasInit() {
 }
 
 function isPainterPaint() {
-  drawingTool = false; // 접속자들의 그릴 권한 통제
+  drawingTool = true; // 접속자들의 그릴 권한 통제
 }
