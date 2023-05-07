@@ -83,7 +83,6 @@ function gameEnd() {
   stopTimer();
 
   isPainter = true;
-  isPainterPaint();
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
 }
 
