@@ -3,6 +3,7 @@ module.exports = function (io) {
 
   var chat_members = 0;
   var connectedUserList = [];
+  var userScore = new Map();
 
   chatIO.on("connection", (socket) => {
     console.log("A user connected to chat");
@@ -18,11 +19,15 @@ module.exports = function (io) {
     });
 
     var username;
+    var arr;
 
     socket.on("userlist", (data) => {
       username = data.username;
       connectedUserList.push(username);
-      chatIO.emit("userlist", connectedUserList);
+      userScore.set(username, 0);
+      console.log("userScore ==>", userScore);
+      arr = Array.from(userScore);
+      chatIO.emit("userlist", arr);
     });
 
     socket.on("correct-player", (data) => {
@@ -38,7 +43,10 @@ module.exports = function (io) {
         connectedUserList.splice(index, 1);
         console.log("User disconnected:", username);
       }
-      chatIO.emit("userlist", connectedUserList);
+
+      userScore.delete(username);
+      arr = Array.from(userScore);
+      chatIO.emit("userlist", arr);
 
       console.log("chat disconnected");
     });

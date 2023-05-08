@@ -95,13 +95,14 @@ function onUserList(data) {
     chat_members.removeChild(chat_members.firstChild);
   }
 
-  // data 배열에 있는 값들을 반복하여 li 태그에 추가
-  data.forEach((item) => {
+  // data 배열에 있는 [key, value] 쌍을 반복하여 li 태그에 추가
+  data.forEach(([key, value]) => {
     const li = document.createElement("li");
-    li.textContent = `${item}님 획득 점수: ${null}`;
+    li.textContent = `${key}님 점수: ${value}`;
     chat_members.appendChild(li);
   });
 }
+
 function onChatInit() {
   /**
    * 채팅 모든 글자 클리어
