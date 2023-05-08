@@ -59,6 +59,8 @@ module.exports = function (io) {
         users.delete(socket.data.username);
         console.log("User unregistered: " + socket.data.username);
         console.log("disconnect", users);
+
+        gameIO.emit("player-disconnect");
       }
     });
   });

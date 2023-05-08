@@ -2,18 +2,24 @@ var gameSocket = io("/game");
 
 gameSocket.emit("register", { username });
 
-setTimeout(() => {
-  fetch("/getReader")
-    .then((response) => response.json())
-    .then((data) => {
-      if (username === data.reader) {
-        start_button.disabled = false;
-      } else {
-        start_button.disabled = true;
-      }
-    })
-    .catch((error) => console.error(error));
-}, 3000);
+gameSocket.on("player-disconnect", initConnect);
+
+function initConnect() {
+  setTimeout(() => {
+    fetch("/getReader")
+      .then((response) => response.json())
+      .then((data) => {
+        if (username === data.reader) {
+          start_button.disabled = false;
+        } else {
+          start_button.disabled = true;
+        }
+      })
+      .catch((error) => console.error(error));
+  }, 3000);
+}
+
+initConnect();
 
 // 게임 시작 버튼을 클릭하면 startGame 함수를 실행합니다.
 var start_button = document.getElementById("start-button");
@@ -23,12 +29,32 @@ var countdown = null;
 start_button.addEventListener("click", function () {
   if (countdown === null) {
     // countdown이 null이면, 즉 게임이 시작되지 않은 상태이면 startGame 함수를 실행합니다.
-    startGame();
+
+    getReader().then((result) => {
+      if (result) {
+        startGame();
+      } else {
+        alert("방장만 게임시작 가능합니다.");
+      }
+    });
   } else {
     // countdown이 null이 아니면, 즉 이미 게임이 시작된 상태이면 취소합니다.
     cancelGame();
   }
 });
+
+function getReader() {
+  return fetch("/getReader")
+    .then((response) => response.json())
+    .then((data) => {
+      if (username === data.reader) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch((error) => console.error(error));
+}
 
 // 버튼의 텍스트를 변경하는 함수
 function updateButtonText(count) {
