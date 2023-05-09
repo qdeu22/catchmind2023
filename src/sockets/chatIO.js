@@ -31,7 +31,10 @@ module.exports = function (io) {
     });
 
     socket.on("correct-player", (data) => {
+      userScore.set(data.username, userScore.get(data.username) + 1);
       chatIO.emit("correct-player", { username: data.username });
+      arr = Array.from(userScore);
+      chatIO.emit("userlist", arr);
     });
 
     socket.on("disconnect", () => {
