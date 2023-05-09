@@ -37,6 +37,14 @@ module.exports = function (io) {
       chatIO.emit("userlist", arr);
     });
 
+    socket.on("clearUserScore", (data) => {
+      userScore.forEach(function (value, key) {
+        userScore.set(key, 0);
+      });
+      arr = Array.from(userScore);
+      chatIO.emit("userlist", arr);
+    });
+
     socket.on("disconnect", () => {
       chat_members--;
       chatIO.emit("members", chat_members);

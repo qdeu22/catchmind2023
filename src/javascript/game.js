@@ -85,6 +85,8 @@ function cancelGame() {
   clearInterval(countdown); // interval을 멈춥니다.
   countdown = null; // countdown 변수를 null로 초기화합니다.
   gameSocket.emit("gameEnd");
+
+  chatSocket.emit("clearUserScore");
 }
 
 // 서버에서 'startTurn' 메시지를 받으면, 해당 사용자의 턴이 시작되었다는 것을 처리합니다.
