@@ -1,0 +1,38 @@
+/* 모달 배경 스타일 */
+#room-modal {
+  display: none;
+  position: fixed; /* 광고창이 아니라 모달창 */
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* 모달 내부 스타일 */
+#room-modal-content {
+  background-color: white;
+  margin: 10% auto; /* div 중앙 정렬 */
+  padding: 15px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+/* 모달 닫기 버튼 스타일 */
+#room-modal-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+/* 모달 닫기 버튼 포인터 변경 */
+#room-modal-close:hover,
+#room-modal-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
