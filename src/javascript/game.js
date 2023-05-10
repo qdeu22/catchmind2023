@@ -116,7 +116,21 @@ function gameEnd() {
 
 gameSocket.on("currentPlayer", currentPlayer);
 
+var turnTimer;
+
 function currentPlayer() {
+  // 30초 뒤 턴 자동 바뀜
+  var count = 30;
+
+  turnTimer = setInterval(function () {
+    count -= 1; // 카운트를 1씩 감소시킵니다.
+
+    if (count === 0) {
+      clearInterval(turnTimer); // 카운트가 0이 되면 interval을 멈춥니다.
+      gameSocket.emit("change-player");
+    }
+  }, 1000);
+
   isPainter = true;
   drawingTool = false;
 
@@ -140,6 +154,9 @@ function onExchange() {
   isPainterChat();
   isPainterPaint();
   onCanvasInit();
+  if (turnTimer !== null) {
+    clearInterval(turnTimer);
+  }
 
   var suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
