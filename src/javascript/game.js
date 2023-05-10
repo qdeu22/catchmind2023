@@ -77,6 +77,7 @@ function startGame() {
 
       // 게임을 실행하는 코드를 여기에 작성합니다.
       gameSocket.emit("gameStart");
+      gameSocket.emit("change-player"); // !
     }
   }, 1000);
 }
@@ -99,8 +100,6 @@ function gameStart() {
 
   isPainterChat();
   isPainterPaint();
-
-  gameSocket.emit("host");
 }
 
 gameSocket.on("gameEnd", gameEnd);
@@ -109,6 +108,12 @@ function gameEnd() {
   drawingTool = false;
   onCanvasInit();
   stopTimer();
+
+  clearInterval(turnTimer);
+  turnTimer = null;
+
+  var suggested_word = document.getElementById("suggested-word");
+  suggested_word.innerText = "-";
 
   isPainter = true;
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
@@ -154,9 +159,9 @@ function onExchange() {
   isPainterChat();
   isPainterPaint();
   onCanvasInit();
-  if (turnTimer !== null) {
-    clearInterval(turnTimer);
-  }
+
+  clearInterval(turnTimer);
+  turnTimer = null;
 
   var suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";

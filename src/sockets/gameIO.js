@@ -4,7 +4,7 @@ module.exports = function (io) {
   // 연결된 사용자 정보 저장
   const users = new Map();
 
-  var currentIndex = 0;
+  var currentIndex;
 
   var next_player;
 
@@ -20,6 +20,7 @@ module.exports = function (io) {
     });
 
     socket.on("gameStart", (data) => {
+      currentIndex = users.size - 1;
       gameIO.emit("gameStart");
     });
 
@@ -28,20 +29,15 @@ module.exports = function (io) {
     });
 
     socket.on("gameEnd", (data) => {
+      currentIndex = users.size - 1;
       gameIO.emit("gameEnd");
     });
 
-    socket.on("host", (data) => {
-      host = Array.from(users.values())[0];
-      gameIO.to(host).emit("currentPlayer");
-    });
-
     socket.on("change-player", () => {
-      // 다음 사용자 인덱스 계산 (순환)
-
       // 모든 접속자에게 공통으로 변경사항
       gameIO.emit("exchange");
 
+      // 다음 사용자 인덱스 계산 (순환)
       currentIndex = (currentIndex + 1) % users.size;
 
       next_player = Array.from(users.values())[currentIndex];
