@@ -4,11 +4,6 @@ const form = document.querySelector("form");
 const input = document.querySelector('input[type="text"]');
 const ul = document.querySelector("ul");
 
-const currentPath = window.location.pathname;
-const roomId = currentPath.slice(currentPath.lastIndexOf("/") + 1);
-
-console.log(roomId);
-
 const username = prompt("닉네임을 입력하세요.");
 
 chatSocket.emit("joinRoom", roomId);

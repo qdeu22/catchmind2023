@@ -9,6 +9,11 @@ canvas.height = 500;
 ctx.strokeStyle = "black";
 ctx.lineWidth = 2.5;
 
+const currentPath = window.location.pathname;
+const roomId = currentPath.slice(currentPath.lastIndexOf("/") + 1);
+
+console.log(roomId);
+
 canvasSocket.emit("joinRoom", roomId);
 
 let painting = false;

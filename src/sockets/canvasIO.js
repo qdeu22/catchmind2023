@@ -10,7 +10,7 @@ module.exports = function (io) {
     });
 
     socket.on("draw", (data) => {
-      canvasIO.emit("draw", data);
+      socket.broadcast.emit("draw", data);
     });
 
     socket.on("disconnect", () => {
