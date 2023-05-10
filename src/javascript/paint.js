@@ -9,6 +9,19 @@ canvas.height = 500;
 ctx.strokeStyle = "black";
 ctx.lineWidth = 2.5;
 
+const currentPath = window.location.pathname;
+
+console.log(currentPath);
+
+fetch(currentPath, {
+  headers: {
+    check: "fetch",
+  }, //보안에 안좋음
+})
+  .then((response) => response.json())
+  .then((data) => console.log(data.roomId))
+  .catch((error) => console.error(error));
+
 let painting = false;
 
 var drawingTool = false; // 접속자들의 그릴 권한 통제

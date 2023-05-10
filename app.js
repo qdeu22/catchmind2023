@@ -32,7 +32,13 @@ app.post("/room/create", (req, res) => {
   const roomName = req.body.roomName;
 
   // 방 생성 작업 수행
-  const newRoom = { id: rooms.length + 1, name: roomName };
+  const newRoom = {
+    id: rooms.length + 1,
+    name: roomName,
+    users: new Map(),
+    userScore: new Map(),
+  };
+
   rooms.push(newRoom);
   console.log(rooms);
 
@@ -46,18 +52,26 @@ app.post("/room/create", (req, res) => {
 // /room/:id 라우팅 경로에서 roomId를 매개변수로 사용합니다.
 app.get("/room/:id", (req, res) => {
   const roomId = req.params.id;
-  var room = rooms.find((room) => {
-    return room.id === parseInt(roomId); // parseInt 꼭하기
-  });
 
-  console.log(room);
-
-  if (room) {
-    // roomId가 배열의 요소로 포함되어 있을 경우
-    res.sendFile(__dirname + "/views/channel.html");
+  // 이 방법은 보안에 취약합니다...
+  if (req.headers.check === "fetch") {
+    // Fetch API 요청인 경우 처리합니다.
+    const data = { roomId: parseInt(roomId) };
+    res.json(data);
   } else {
-    // roomId가 배열의 요소로 포함되어 있지 않을 경우
-    res.status(404).json({ error: `방 ${roomId}은 존재하지 않습니다.` });
+    var room = rooms.find((room) => {
+      return room.id === parseInt(roomId); // parseInt 꼭하기
+    });
+
+    console.log(room);
+
+    if (room) {
+      // roomId가 배열의 요소로 포함되어 있을 경우
+      res.sendFile(__dirname + "/views/channel.html");
+    } else {
+      // roomId가 배열의 요소로 포함되어 있지 않을 경우
+      res.status(404).json({ error: `방 ${roomId}은 존재하지 않습니다.` });
+    }
   }
 });
 
@@ -100,3 +114,7 @@ app.post("/checkChat", (req, res) => {
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+module.exports = {
+  rooms,
+};
