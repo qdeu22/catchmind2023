@@ -4,8 +4,13 @@ module.exports = function (io) {
   canvasIO.on("connection", (socket) => {
     console.log("canvas connected");
 
+    socket.on("joinRoom", (roomId) => {
+      socket.join(roomId);
+      canvasIO.to(roomId).emit("event", `hello ${roomId}방 from canvasIO`);
+    });
+
     socket.on("draw", (data) => {
-      socket.broadcast.emit("draw", data);
+      canvasIO.emit("draw", data);
     });
 
     socket.on("disconnect", () => {

@@ -8,6 +8,11 @@ module.exports = function (io) {
   chatIO.on("connection", (socket) => {
     console.log("A user connected to chat");
 
+    socket.on("joinRoom", (roomId) => {
+      socket.join(roomId);
+      chatIO.to(roomId).emit("event", `hello ${roomId}방 from chatIO`);
+    });
+
     chat_members++;
 
     socket.on("message", (data) => {

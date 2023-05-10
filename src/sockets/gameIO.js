@@ -11,6 +11,11 @@ module.exports = function (io) {
   gameIO.on("connection", (socket) => {
     console.log("game User connected: " + socket.id);
 
+    socket.on("joinRoom", (roomId) => {
+      socket.join(roomId);
+      gameIO.to(roomId).emit("event", `hello ${roomId}방 from gameIO`);
+    });
+
     // 사용자 정보 저장
     socket.on("register", (data) => {
       socket.data.username = data.username;

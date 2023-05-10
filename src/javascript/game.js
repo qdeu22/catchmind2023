@@ -1,6 +1,8 @@
-var gameSocket = io("/game");
+const gameSocket = io("/game");
 
 gameSocket.emit("register", { username });
+
+gameSocket.emit("joinRoom", roomId);
 
 gameSocket.on("player-disconnect", initConnect);
 
