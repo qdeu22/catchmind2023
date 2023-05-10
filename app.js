@@ -53,25 +53,18 @@ app.post("/room/create", (req, res) => {
 app.get("/room/:id", (req, res) => {
   const roomId = req.params.id;
 
-  // 이 방법은 보안에 취약합니다...
-  if (req.headers.check === "fetch") {
-    // Fetch API 요청인 경우 처리합니다.
-    const data = { roomId: parseInt(roomId) };
-    res.json(data);
+  var room = rooms.find((room) => {
+    return room.id === parseInt(roomId); // parseInt 꼭하기
+  });
+
+  console.log(room);
+
+  if (room) {
+    // roomId가 배열의 요소로 포함되어 있을 경우
+    res.sendFile(__dirname + "/views/channel.html");
   } else {
-    var room = rooms.find((room) => {
-      return room.id === parseInt(roomId); // parseInt 꼭하기
-    });
-
-    console.log(room);
-
-    if (room) {
-      // roomId가 배열의 요소로 포함되어 있을 경우
-      res.sendFile(__dirname + "/views/channel.html");
-    } else {
-      // roomId가 배열의 요소로 포함되어 있지 않을 경우
-      res.status(404).json({ error: `방 ${roomId}은 존재하지 않습니다.` });
-    }
+    // roomId가 배열의 요소로 포함되어 있지 않을 경우
+    res.status(404).json({ error: `방 ${roomId}은 존재하지 않습니다.` });
   }
 });
 
