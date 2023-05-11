@@ -193,9 +193,6 @@ gameIO.on("connection", (socket) => {
 
     var arr = Array.from(targetRoom.userScore);
 
-    // console.log("targetRoom.id 숫자", targetRoom.id);
-    // console.log("roomID 문자", roomID);
-
     gameIO.to(roomID).emit("members", targetRoom.users.size);
 
     gameIO.to(roomID).emit("userlist", arr);
@@ -210,7 +207,7 @@ gameIO.on("connection", (socket) => {
 
     roomOfInfo.push(roomData);
 
-    console.log("roomData", roomOfInfo);
+    console.log("roomOfInfo", roomOfInfo);
 
     gameIO.to(roomID).emit("gameStart");
   });
@@ -220,7 +217,9 @@ gameIO.on("connection", (socket) => {
   });
 
   socket.on("gameEnd", (data) => {
-    currentIndex = targetRoom.users.size - 1;
+    roomOfInfo = roomOfInfo.filter((info) => info.id !== roomID);
+
+    console.log("roomOfInfo", roomOfInfo);
     gameIO.to(roomID).emit("gameEnd");
   });
 
