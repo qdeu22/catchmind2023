@@ -8,7 +8,7 @@ gameSocket.on("player-disconnect", initConnect);
 
 function initConnect() {
   setTimeout(() => {
-    fetch("/getReader")
+    fetch(`/getReader?id=${roomId}`)
       .then((response) => response.json())
       .then((data) => {
         if (username === data.reader) {
@@ -46,7 +46,7 @@ start_button.addEventListener("click", function () {
 });
 
 function getReader() {
-  return fetch("/getReader")
+  return fetch(`/getReader?id=${roomId}`)
     .then((response) => response.json())
     .then((data) => {
       if (username === data.reader) {
@@ -89,7 +89,7 @@ function cancelGame() {
   countdown = null; // countdown 변수를 null로 초기화합니다.
   gameSocket.emit("gameEnd");
 
-  chatSocket.emit("clearUserScore");
+  gameSocket.emit("clearUserScore");
 }
 
 // 서버에서 'startTurn' 메시지를 받으면, 해당 사용자의 턴이 시작되었다는 것을 처리합니다.
@@ -173,4 +173,32 @@ gameSocket.on("onCount", onCount);
 
 function onCount(data) {
   updateButtonText(data.count); // 버튼의 텍스트를 갱신합니다.
+}
+
+gameSocket.on("userlist", onUserList);
+
+function onUserList(data) {
+  const chat_members = document.querySelector(".user-list");
+
+  // chat_members의 자식 노드들을 모두 제거
+  while (chat_members.firstChild) {
+    chat_members.removeChild(chat_members.firstChild);
+  }
+
+  // data 배열에 있는 [key, value] 쌍을 반복하여 li 태그에 추가
+  data.forEach(([key, value]) => {
+    const li = document.createElement("li");
+    li.textContent = `${key}님 점수: ${value}`;
+    chat_members.appendChild(li);
+  });
+}
+
+gameSocket.on("correct-player", onCorrectPlayer);
+
+function onCorrectPlayer(data) {
+  const li = document.createElement("li"); // 새로운 리스트 아이템 생성
+  li.textContent = `${data.username}님이 정답을 맞쳤습니다.`; // 리스트 아이템에 메시지 추가
+  li.classList.add("message"); // message 클래스 추가
+  ul.appendChild(li); // 리스트에 아이템 추가
+  scrollToBottom(); // 스크롤을 최하단으로 내림
 }

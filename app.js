@@ -86,7 +86,11 @@ app.get("/getRandomWord", (req, res) => {
 });
 
 app.get("/getReader", (req, res) => {
-  const [reader, readerId] = users.entries().next().value;
+  const id = req.query.id;
+  var targetRoom = rooms.find((room) => {
+    return room.id === parseInt(id);
+  });
+  const [reader, readerId] = targetRoom.users.entries().next().value;
   const data = { reader, readerId };
   console.log(reader, readerId);
   res.json(data);
@@ -160,30 +164,6 @@ chatIO.on("connection", (socket) => {
   var username;
   var arr;
 
-  socket.on("userlist", (data) => {
-    username = data.username;
-    connectedUserList.push(username);
-    userScore.set(username, 0);
-    console.log("userScore ==>", userScore);
-    arr = Array.from(userScore);
-    chatIO.emit("userlist", arr);
-  });
-
-  socket.on("correct-player", (data) => {
-    userScore.set(data.username, userScore.get(data.username) + 1);
-    chatIO.emit("correct-player", { username: data.username });
-    arr = Array.from(userScore);
-    chatIO.emit("userlist", arr);
-  });
-
-  socket.on("clearUserScore", (data) => {
-    userScore.forEach(function (value, key) {
-      userScore.set(key, 0);
-    });
-    arr = Array.from(userScore);
-    chatIO.emit("userlist", arr);
-  });
-
   socket.on("disconnect", () => {
     // chat_members--;
     // chatIO.emit("members", chat_members);
@@ -196,7 +176,7 @@ chatIO.on("connection", (socket) => {
 
     userScore.delete(username);
     arr = Array.from(userScore);
-    chatIO.emit("userlist", arr);
+    //chatIO.emit("userlist", arr);
 
     //console.log("chat disconnected");
   });
@@ -205,9 +185,6 @@ chatIO.on("connection", (socket) => {
 ///////////////////////////////////////////////////////////////////
 
 const gameIO = io.of("/game");
-
-// 연결된 사용자 정보 저장
-const users = new Map();
 
 var currentIndex;
 
@@ -240,9 +217,14 @@ gameIO.on("connection", (socket) => {
     targetRoom.users.set(data.username, socket.id);
     targetRoom.userScore.set(data.username, 0);
 
-    console.log("targetRoom", rooms);
+    console.log("rooms", rooms);
 
-    users.set(data.username, socket.id); // 지울것!
+    var arr = Array.from(targetRoom.userScore);
+
+    console.log("targetRoom.id 숫자", targetRoom.id);
+    console.log("roomID 문자", roomID);
+
+    gameIO.to(roomID).emit("userlist", arr);
   });
 
   socket.on("gameStart", (data) => {
@@ -272,18 +254,37 @@ gameIO.on("connection", (socket) => {
     gameIO.to(roomID).to(next_player).emit("currentPlayer");
   });
 
+  socket.on("correct-player", (data) => {
+    targetRoom.userScore.set(
+      data.username,
+      targetRoom.userScore.get(data.username) + 1
+    );
+    gameIO.to(roomID).emit("correct-player", { username: data.username });
+    var arr = Array.from(targetRoom.userScore);
+    gameIO.to(roomID).emit("userlist", arr);
+  });
+
+  socket.on("clearUserScore", (data) => {
+    targetRoom.userScore.forEach(function (value, key) {
+      targetRoom.userScore.set(key, 0);
+    });
+    var arr = Array.from(targetRoom.userScore);
+    gameIO.to(roomID).emit("userlist", arr);
+  });
+
   // 소켓 연결 종료 시
   socket.on("disconnect", () => {
     console.log("User disconnected: " + socket.id);
 
     // 연결된 사용자 정보에서 제거
     if (socket.data.username) {
-      users.delete(socket.data.username);
       console.log("User unregistered: " + socket.data.username);
 
       targetRoom.users.delete(socket.data.username);
       targetRoom.userScore.delete(socket.data.username);
       console.log("disconnect targetRoom", targetRoom);
+
+      console.log("rooms", rooms);
 
       gameIO.to(roomID).emit("player-disconnect");
     }

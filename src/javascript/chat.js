@@ -42,7 +42,7 @@ form.addEventListener("submit", (event) => {
         .then((response) => response.json())
         .then((result) => {
           if (result.result) {
-            chatSocket.emit("correct-player", { username });
+            gameSocket.emit("correct-player", { username });
             gameSocket.emit("change-player"); //임시!
           }
         })
@@ -50,16 +50,6 @@ form.addEventListener("submit", (event) => {
     }
   }
 });
-
-chatSocket.on("correct-player", onCorrectPlayer);
-
-function onCorrectPlayer(data) {
-  const li = document.createElement("li"); // 새로운 리스트 아이템 생성
-  li.textContent = `${data.username}님이 정답을 맞쳤습니다.`; // 리스트 아이템에 메시지 추가
-  li.classList.add("message"); // message 클래스 추가
-  ul.appendChild(li); // 리스트에 아이템 추가
-  scrollToBottom(); // 스크롤을 최하단으로 내림
-}
 
 function isPainterChat() {
   isPainter = false; // 전부 초기화 , 그림그리는 사람은 채팅을 검사안한다는거지
@@ -81,26 +71,6 @@ function onChat(data) {
 //   const chat_members = document.querySelector(".chat-members");
 //   chat_members.textContent = `현재 접속자 ${data}명`;
 // }
-
-chatSocket.emit("userlist", { username });
-
-chatSocket.on("userlist", onUserList);
-
-function onUserList(data) {
-  const chat_members = document.querySelector(".user-list");
-
-  // chat_members의 자식 노드들을 모두 제거
-  while (chat_members.firstChild) {
-    chat_members.removeChild(chat_members.firstChild);
-  }
-
-  // data 배열에 있는 [key, value] 쌍을 반복하여 li 태그에 추가
-  data.forEach(([key, value]) => {
-    const li = document.createElement("li");
-    li.textContent = `${key}님 점수: ${value}`;
-    chat_members.appendChild(li);
-  });
-}
 
 function onChatInit() {
   /**
