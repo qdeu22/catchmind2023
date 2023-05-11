@@ -18,11 +18,15 @@ app.use(express.static(path.join(__dirname, "src")));
 // JSON 형식의 요청 바디를 파싱하기 위한 미들웨어 등록
 app.use(bodyParser.json());
 
+const rooms = [];
+
+const wordModule = require("./lib/file");
+
+var randomWord;
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
-
-const rooms = [];
 
 app.get("/room", (req, res) => {
   res.sendFile(__dirname + "/views/room.html");
@@ -68,13 +72,11 @@ app.get("/room/:id", (req, res) => {
   }
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 app.get("/rooms", (req, res) => {
   res.json(rooms);
 });
-
-const wordModule = require("./lib/file");
-
-var randomWord;
 
 app.get("/getRandomWord", (req, res) => {
   // getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
@@ -82,9 +84,6 @@ app.get("/getRandomWord", (req, res) => {
   const data = { message: randomWord };
   res.json(data);
 });
-const canvasIO = require("./src/sockets/canvasIO")(io);
-const chatIO = require("./src/sockets/chatIO")(io);
-const { users } = require("./src/sockets/gameIO")(io);
 
 app.get("/getReader", (req, res) => {
   const [reader, readerId] = users.entries().next().value;
@@ -104,10 +103,168 @@ app.post("/checkChat", (req, res) => {
   }
 });
 
+const canvasIO = io.of("/canvas");
+
+canvasIO.on("connection", (socket) => {
+  console.log("canvas connected");
+
+  var roomID;
+
+  socket.on("joinRoom", (roomId) => {
+    roomID = roomId;
+
+    socket.join(roomId);
+    canvasIO.to(roomId).emit("event", `hello ${roomId}방 from canvasIO`);
+  });
+
+  socket.on("draw", (data) => {
+    socket.broadcast.to(roomID).emit("draw", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("canvas disconnected");
+  });
+});
+
+const chatIO = io.of("/chat");
+
+//var chat_members = 0;
+var connectedUserList = [];
+var userScore = new Map();
+
+chatIO.on("connection", (socket) => {
+  console.log("A user connected to chat");
+
+  var roomID;
+
+  socket.on("joinRoom", (roomId) => {
+    roomID = roomId;
+    socket.join(roomId);
+    chatIO.to(roomId).emit("event", `hello ${roomId}방 from chatIO`);
+  });
+
+  //chat_members++;
+
+  socket.on("message", (data) => {
+    socket.broadcast.to(roomID).emit("message", data);
+  });
+
+  // socket.on("members", () => {
+  //   chatIO.emit("members", chat_members);
+  // });
+
+  var username;
+  var arr;
+
+  socket.on("userlist", (data) => {
+    username = data.username;
+    connectedUserList.push(username);
+    userScore.set(username, 0);
+    console.log("userScore ==>", userScore);
+    arr = Array.from(userScore);
+    chatIO.emit("userlist", arr);
+  });
+
+  socket.on("correct-player", (data) => {
+    userScore.set(data.username, userScore.get(data.username) + 1);
+    chatIO.emit("correct-player", { username: data.username });
+    arr = Array.from(userScore);
+    chatIO.emit("userlist", arr);
+  });
+
+  socket.on("clearUserScore", (data) => {
+    userScore.forEach(function (value, key) {
+      userScore.set(key, 0);
+    });
+    arr = Array.from(userScore);
+    chatIO.emit("userlist", arr);
+  });
+
+  socket.on("disconnect", () => {
+    // chat_members--;
+    // chatIO.emit("members", chat_members);
+
+    const index = connectedUserList.indexOf(username);
+    if (index !== -1) {
+      connectedUserList.splice(index, 1);
+      console.log("User disconnected:", username);
+    }
+
+    userScore.delete(username);
+    arr = Array.from(userScore);
+    chatIO.emit("userlist", arr);
+
+    console.log("chat disconnected");
+  });
+});
+
+const gameIO = io.of("/game");
+
+// 연결된 사용자 정보 저장
+const users = new Map();
+
+var currentIndex;
+
+var next_player;
+
+gameIO.on("connection", (socket) => {
+  console.log("game User connected: " + socket.id);
+
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+    gameIO.to(roomId).emit("event", `hello ${roomId}방 from gameIO`);
+  });
+
+  // 사용자 정보 저장
+  socket.on("register", (data) => {
+    socket.data.username = data.username;
+    users.set(data.username, socket.id);
+    console.log("User registered: " + socket.data.username);
+    console.log("register", users);
+  });
+
+  socket.on("gameStart", (data) => {
+    currentIndex = users.size - 1;
+    gameIO.emit("gameStart");
+  });
+
+  socket.on("onCount", (data) => {
+    gameIO.emit("onCount", data);
+  });
+
+  socket.on("gameEnd", (data) => {
+    currentIndex = users.size - 1;
+    gameIO.emit("gameEnd");
+  });
+
+  socket.on("change-player", () => {
+    // 모든 접속자에게 공통으로 변경사항
+    gameIO.emit("exchange");
+
+    // 다음 사용자 인덱스 계산 (순환)
+    currentIndex = (currentIndex + 1) % users.size;
+
+    next_player = Array.from(users.values())[currentIndex];
+
+    // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
+    gameIO.to(next_player).emit("currentPlayer");
+  });
+
+  // 소켓 연결 종료 시
+  socket.on("disconnect", () => {
+    console.log("User disconnected: " + socket.id);
+
+    // 연결된 사용자 정보에서 제거
+    if (socket.data.username) {
+      users.delete(socket.data.username);
+      console.log("User unregistered: " + socket.data.username);
+      console.log("disconnect", users);
+
+      gameIO.emit("player-disconnect");
+    }
+  });
+});
+
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
-module.exports = {
-  rooms,
-};
