@@ -156,6 +156,13 @@ function getWord() {
     .catch((error) => console.error(error));
 }
 
+gameSocket.on("members", onMembers);
+
+function onMembers(data) {
+  const chat_members = document.querySelector(".chat-members");
+  chat_members.textContent = `현재 접속자 ${data}명`;
+}
+
 gameSocket.on("exchange", onExchange);
 
 function onExchange() {

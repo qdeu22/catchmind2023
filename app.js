@@ -134,8 +134,6 @@ canvasIO.on("connection", (socket) => {
 
 const chatIO = io.of("/chat");
 
-//var chat_members = 0;
-
 chatIO.on("connection", (socket) => {
   console.log("chat connect");
 
@@ -144,23 +142,14 @@ chatIO.on("connection", (socket) => {
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
     socket.join(roomId);
-    chatIO.to(roomId).emit("event", `hello ${roomId}방 from chatIO`);
+    console.log(`hello ${roomId}방 from chatIO`);
   });
 
   socket.on("message", (data) => {
     socket.broadcast.to(roomID).emit("message", data);
   });
 
-  //chat_members++;
-
-  // socket.on("members", () => {
-  //   chatIO.emit("members", chat_members);
-  // });
-
   socket.on("disconnect", () => {
-    // chat_members--;
-    // chatIO.emit("members", chat_members);
-
     console.log("chat disconnected");
   });
 });
@@ -169,20 +158,19 @@ chatIO.on("connection", (socket) => {
 
 const gameIO = io.of("/game");
 
-var currentIndex;
-
-var next_player;
-
 gameIO.on("connection", (socket) => {
   console.log("game User connected: " + socket.id);
 
   var roomID;
   var targetRoom;
 
+  var currentIndex;
+  var next_player;
+
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
     socket.join(roomId);
-    gameIO.to(roomId).emit("event", `hello ${roomId}방 from gameIO`);
+    console.log(`hello ${roomId}방 from gameIO`);
   });
 
   // 사용자 정보 저장
@@ -206,6 +194,8 @@ gameIO.on("connection", (socket) => {
 
     console.log("targetRoom.id 숫자", targetRoom.id);
     console.log("roomID 문자", roomID);
+
+    gameIO.to(roomID).emit("members", targetRoom.users.size);
 
     gameIO.to(roomID).emit("userlist", arr);
   });
@@ -273,6 +263,8 @@ gameIO.on("connection", (socket) => {
 
       var arr = Array.from(targetRoom.userScore);
       gameIO.to(roomID).emit("userlist", arr);
+
+      gameIO.to(roomID).emit("members", targetRoom.users.size);
 
       gameIO.to(roomID).emit("player-disconnect");
     }
