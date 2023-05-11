@@ -108,7 +108,7 @@ app.post("/checkChat", (req, res) => {
 const canvasIO = io.of("/canvas");
 
 canvasIO.on("connection", (socket) => {
-  console.log("canvas connected");
+  // console.log("canvas connected");
 
   var roomID;
 
@@ -124,7 +124,7 @@ canvasIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("canvas disconnected");
+    //console.log("canvas disconnected");
   });
 });
 
@@ -137,7 +137,7 @@ var connectedUserList = [];
 var userScore = new Map();
 
 chatIO.on("connection", (socket) => {
-  console.log("A user connected to chat");
+  // console.log("A user connected to chat");
 
   var roomID;
 
@@ -198,7 +198,7 @@ chatIO.on("connection", (socket) => {
     arr = Array.from(userScore);
     chatIO.emit("userlist", arr);
 
-    console.log("chat disconnected");
+    //console.log("chat disconnected");
   });
 });
 
@@ -217,6 +217,7 @@ gameIO.on("connection", (socket) => {
   console.log("game User connected: " + socket.id);
 
   var roomID;
+  var targetRoom;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
@@ -227,15 +228,17 @@ gameIO.on("connection", (socket) => {
   // 사용자 정보 저장
   socket.on("register", (data) => {
     socket.data.username = data.username;
-    const targetRoom = rooms.find((room) => {
+
+    targetRoom = rooms.find((room) => {
       return room.id === parseInt(roomID);
     });
+
     console.log("targetRoom", targetRoom);
     targetRoom.users.set(data.username, socket.id);
+    targetRoom.userScore.set(data.username, 0);
+
     console.log("targetRoom", rooms);
     users.set(data.username, socket.id);
-    console.log("User registered: " + socket.data.username);
-    console.log("register", users);
   });
 
   socket.on("gameStart", (data) => {
@@ -273,7 +276,10 @@ gameIO.on("connection", (socket) => {
     if (socket.data.username) {
       users.delete(socket.data.username);
       console.log("User unregistered: " + socket.data.username);
-      console.log("disconnect", users);
+
+      targetRoom.users.delete(socket.data.username);
+      targetRoom.userScore.delete(socket.data.username);
+      console.log("disconnect targetRoom", targetRoom);
 
       gameIO.emit("player-disconnect");
     }
