@@ -112,15 +112,13 @@ app.post("/checkChat", (req, res) => {
 const canvasIO = io.of("/canvas");
 
 canvasIO.on("connection", (socket) => {
-  // console.log("canvas connected");
-
+  console.log("canvas connected");
   var roomID;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
-
     socket.join(roomId);
-    canvasIO.to(roomId).emit("event", `hello ${roomId}방 from canvasIO`);
+    console.log(`hello ${roomId}방 from canvasIO`);
   });
 
   socket.on("draw", (data) => {
@@ -128,7 +126,7 @@ canvasIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    //console.log("canvas disconnected");
+    console.log("canvas disconnected");
   });
 });
 
@@ -137,11 +135,9 @@ canvasIO.on("connection", (socket) => {
 const chatIO = io.of("/chat");
 
 //var chat_members = 0;
-var connectedUserList = [];
-var userScore = new Map();
 
 chatIO.on("connection", (socket) => {
-  // console.log("A user connected to chat");
+  console.log("chat connect");
 
   var roomID;
 
@@ -151,34 +147,21 @@ chatIO.on("connection", (socket) => {
     chatIO.to(roomId).emit("event", `hello ${roomId}방 from chatIO`);
   });
 
-  //chat_members++;
-
   socket.on("message", (data) => {
     socket.broadcast.to(roomID).emit("message", data);
   });
+
+  //chat_members++;
 
   // socket.on("members", () => {
   //   chatIO.emit("members", chat_members);
   // });
 
-  var username;
-  var arr;
-
   socket.on("disconnect", () => {
     // chat_members--;
     // chatIO.emit("members", chat_members);
 
-    const index = connectedUserList.indexOf(username);
-    if (index !== -1) {
-      connectedUserList.splice(index, 1);
-      console.log("User disconnected:", username);
-    }
-
-    userScore.delete(username);
-    arr = Array.from(userScore);
-    //chatIO.emit("userlist", arr);
-
-    //console.log("chat disconnected");
+    console.log("chat disconnected");
   });
 });
 
@@ -250,8 +233,10 @@ gameIO.on("connection", (socket) => {
 
     next_player = Array.from(targetRoom.users.values())[currentIndex];
 
+    console.log("next_player", next_player);
+
     // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
-    gameIO.to(roomID).to(next_player).emit("currentPlayer");
+    gameIO.to(next_player).emit("currentPlayer"); // ????/
   });
 
   socket.on("correct-player", (data) => {
@@ -285,6 +270,9 @@ gameIO.on("connection", (socket) => {
       console.log("disconnect targetRoom", targetRoom);
 
       console.log("rooms", rooms);
+
+      var arr = Array.from(targetRoom.userScore);
+      gameIO.to(roomID).emit("userlist", arr);
 
       gameIO.to(roomID).emit("player-disconnect");
     }

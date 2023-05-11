@@ -138,6 +138,7 @@ function currentPlayer() {
     }
   }, 1000);
 
+  console.log("hohohoh");
   isPainter = true;
   drawingTool = false;
 
