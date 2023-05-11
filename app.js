@@ -158,14 +158,15 @@ chatIO.on("connection", (socket) => {
 
 const gameIO = io.of("/game");
 
+var roomOfInfo = [];
+
 gameIO.on("connection", (socket) => {
   console.log("game User connected: " + socket.id);
 
   var roomID;
   var targetRoom;
 
-  var currentIndex;
-  var next_player;
+  var info;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
@@ -192,8 +193,8 @@ gameIO.on("connection", (socket) => {
 
     var arr = Array.from(targetRoom.userScore);
 
-    console.log("targetRoom.id 숫자", targetRoom.id);
-    console.log("roomID 문자", roomID);
+    // console.log("targetRoom.id 숫자", targetRoom.id);
+    // console.log("roomID 문자", roomID);
 
     gameIO.to(roomID).emit("members", targetRoom.users.size);
 
@@ -201,7 +202,16 @@ gameIO.on("connection", (socket) => {
   });
 
   socket.on("gameStart", (data) => {
-    currentIndex = targetRoom.users.size - 1;
+    const roomData = {
+      id: roomID,
+      users: targetRoom.users.size,
+      current_index: targetRoom.users.size - 1,
+    };
+
+    roomOfInfo.push(roomData);
+
+    console.log("roomData", roomOfInfo);
+
     gameIO.to(roomID).emit("gameStart");
   });
 
@@ -218,10 +228,19 @@ gameIO.on("connection", (socket) => {
     // 모든 접속자에게 공통으로 변경사항
     gameIO.to(roomID).emit("exchange");
 
-    // 다음 사용자 인덱스 계산 (순환)
-    currentIndex = (currentIndex + 1) % targetRoom.users.size;
+    // why?
+    info = roomOfInfo.find((info) => {
+      return info.id === roomID;
+    });
 
-    next_player = Array.from(targetRoom.users.values())[currentIndex];
+    console.log("info.users", info.users);
+
+    // 다음 사용자 인덱스 계산 (순환)
+    info.current_index = (info.current_index + 1) % info.users;
+
+    console.log("info.current_index", info.current_index);
+
+    next_player = Array.from(targetRoom.users.values())[info.current_index]; //!!!!
 
     console.log("next_player", next_player);
 

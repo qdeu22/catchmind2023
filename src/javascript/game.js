@@ -127,7 +127,7 @@ var turnTimer;
 
 function currentPlayer() {
   // 30초 뒤 턴 자동 바뀜
-  var count = 30;
+  var count = 10;
 
   turnTimer = setInterval(function () {
     count -= 1; // 카운트를 1씩 감소시킵니다.
