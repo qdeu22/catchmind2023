@@ -229,43 +229,47 @@ gameIO.on("connection", (socket) => {
   socket.on("register", (data) => {
     socket.data.username = data.username;
 
+    // 번호와 같은 방을 찾음 {} 객체형으로
     targetRoom = rooms.find((room) => {
       return room.id === parseInt(roomID);
     });
 
     console.log("targetRoom", targetRoom);
+
+    // 입장하면 인원을 초기 셋팅
     targetRoom.users.set(data.username, socket.id);
     targetRoom.userScore.set(data.username, 0);
 
     console.log("targetRoom", rooms);
-    users.set(data.username, socket.id);
+
+    users.set(data.username, socket.id); // 지울것!
   });
 
   socket.on("gameStart", (data) => {
-    currentIndex = users.size - 1;
-    gameIO.emit("gameStart");
+    currentIndex = targetRoom.users.size - 1;
+    gameIO.to(roomID).emit("gameStart");
   });
 
   socket.on("onCount", (data) => {
-    gameIO.emit("onCount", data);
+    gameIO.to(roomID).emit("onCount", data);
   });
 
   socket.on("gameEnd", (data) => {
-    currentIndex = users.size - 1;
-    gameIO.emit("gameEnd");
+    currentIndex = targetRoom.users.size - 1;
+    gameIO.to(roomID).emit("gameEnd");
   });
 
   socket.on("change-player", () => {
     // 모든 접속자에게 공통으로 변경사항
-    gameIO.emit("exchange");
+    gameIO.to(roomID).emit("exchange");
 
     // 다음 사용자 인덱스 계산 (순환)
-    currentIndex = (currentIndex + 1) % users.size;
+    currentIndex = (currentIndex + 1) % targetRoom.users.size;
 
-    next_player = Array.from(users.values())[currentIndex];
+    next_player = Array.from(targetRoom.users.values())[currentIndex];
 
     // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
-    gameIO.to(next_player).emit("currentPlayer");
+    gameIO.to(roomID).to(next_player).emit("currentPlayer");
   });
 
   // 소켓 연결 종료 시
@@ -281,7 +285,7 @@ gameIO.on("connection", (socket) => {
       targetRoom.userScore.delete(socket.data.username);
       console.log("disconnect targetRoom", targetRoom);
 
-      gameIO.emit("player-disconnect");
+      gameIO.to(roomID).emit("player-disconnect");
     }
   });
 });
