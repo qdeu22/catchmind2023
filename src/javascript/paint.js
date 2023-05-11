@@ -1,3 +1,9 @@
+const username = prompt("닉네임을 입력하세요.");
+
+if (username === null || username === "") {
+  window.location.href = "/";
+}
+
 const canvasSocket = io("/canvas");
 
 const canvas = document.getElementById("jsCanvas");

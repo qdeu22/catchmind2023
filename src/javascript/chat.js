@@ -4,13 +4,7 @@ const form = document.querySelector("form");
 const input = document.querySelector('input[type="text"]');
 const ul = document.querySelector("ul");
 
-const username = prompt("닉네임을 입력하세요.");
-
 chatSocket.emit("joinRoom", roomId);
-
-if (username === null || username === "") {
-  window.location.href = "/";
-}
 
 function scrollToBottom() {
   ul.scrollTop = ul.scrollHeight;

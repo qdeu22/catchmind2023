@@ -103,6 +103,8 @@ app.post("/checkChat", (req, res) => {
   }
 });
 
+///////////////////////////////////////////////////////////////////
+
 const canvasIO = io.of("/canvas");
 
 canvasIO.on("connection", (socket) => {
@@ -125,6 +127,8 @@ canvasIO.on("connection", (socket) => {
     console.log("canvas disconnected");
   });
 });
+
+///////////////////////////////////////////////////////////////////
 
 const chatIO = io.of("/chat");
 
@@ -198,6 +202,8 @@ chatIO.on("connection", (socket) => {
   });
 });
 
+///////////////////////////////////////////////////////////////////
+
 const gameIO = io.of("/game");
 
 // 연결된 사용자 정보 저장
@@ -210,7 +216,10 @@ var next_player;
 gameIO.on("connection", (socket) => {
   console.log("game User connected: " + socket.id);
 
+  var roomID;
+
   socket.on("joinRoom", (roomId) => {
+    roomID = roomId;
     socket.join(roomId);
     gameIO.to(roomId).emit("event", `hello ${roomId}방 from gameIO`);
   });
@@ -218,6 +227,12 @@ gameIO.on("connection", (socket) => {
   // 사용자 정보 저장
   socket.on("register", (data) => {
     socket.data.username = data.username;
+    const targetRoom = rooms.find((room) => {
+      return room.id === parseInt(roomID);
+    });
+    console.log("targetRoom", targetRoom);
+    targetRoom.users.set(data.username, socket.id);
+    console.log("targetRoom", rooms);
     users.set(data.username, socket.id);
     console.log("User registered: " + socket.data.username);
     console.log("register", users);
