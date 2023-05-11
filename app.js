@@ -44,7 +44,7 @@ app.post("/room/create", (req, res) => {
   };
 
   rooms.push(newRoom);
-  console.log(rooms);
+  console.log("생성된 방 목록 배열 =>", rooms);
 
   // 생성된 방 정보를 클라이언트에게 응답
   res.json({
@@ -61,7 +61,7 @@ app.get("/room/:id", (req, res) => {
     return room.id === parseInt(roomId); // parseInt 꼭하기
   });
 
-  console.log(room);
+  console.log(`/room/${roomId}를 통해 찾은 방 객체 =>`, room);
 
   if (room) {
     // roomId가 배열의 요소로 포함되어 있을 경우
@@ -92,7 +92,9 @@ app.get("/getReader", (req, res) => {
   });
   const [reader, readerId] = targetRoom.users.entries().next().value;
   const data = { reader, readerId };
-  console.log(reader, readerId);
+  console.log(
+    `${id}방의 방장은 ${reader}님 입니다. 그리고 소켓 ID는 ${readerId}입니다.`
+  );
   res.json(data);
 });
 
@@ -112,13 +114,13 @@ app.post("/checkChat", (req, res) => {
 const canvasIO = io.of("/canvas");
 
 canvasIO.on("connection", (socket) => {
-  console.log("canvas connected");
+  console.log("캔버스 소켓에 정상접속");
   var roomID;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
     socket.join(roomId);
-    console.log(`hello ${roomId}방 from canvasIO`);
+    console.log(`${roomId}방에 캔버스 소켓 연결`);
   });
 
   socket.on("draw", (data) => {
@@ -126,7 +128,7 @@ canvasIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("canvas disconnected");
+    console.log("캔버스 소켓에 접속해지");
   });
 });
 
@@ -135,14 +137,14 @@ canvasIO.on("connection", (socket) => {
 const chatIO = io.of("/chat");
 
 chatIO.on("connection", (socket) => {
-  console.log("chat connect");
+  console.log("채팅 소켓에 정상접속");
 
   var roomID;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
     socket.join(roomId);
-    console.log(`hello ${roomId}방 from chatIO`);
+    console.log(`${roomId}방에 채팅 소켓 연결`);
   });
 
   socket.on("message", (data) => {
@@ -150,7 +152,7 @@ chatIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("chat disconnected");
+    console.log("채팅 소켓에 접근해지");
   });
 });
 
@@ -161,7 +163,7 @@ const gameIO = io.of("/game");
 var roomOfInfo = [];
 
 gameIO.on("connection", (socket) => {
-  console.log("game User connected: " + socket.id);
+  console.log(`게임 소켓에 소켓ID ${socket.id}님이 정상접속`);
 
   var roomID;
   var targetRoom;
@@ -171,7 +173,7 @@ gameIO.on("connection", (socket) => {
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
     socket.join(roomId);
-    console.log(`hello ${roomId}방 from gameIO`);
+    console.log(`${roomId}방에 게임 소켓 연결`);
   });
 
   // 사용자 정보 저장
@@ -183,13 +185,13 @@ gameIO.on("connection", (socket) => {
       return room.id === parseInt(roomID);
     });
 
-    console.log("targetRoom", targetRoom);
+    console.log(`방목록에서 해당 방${roomID}의 정보 =>`, targetRoom);
 
     // 입장하면 인원을 초기 셋팅
     targetRoom.users.set(data.username, socket.id);
     targetRoom.userScore.set(data.username, 0);
 
-    console.log("rooms", rooms);
+    console.log(`사용자 등록후 모든 방목록의 세부 정보 =>`, rooms);
 
     var arr = Array.from(targetRoom.userScore);
 
@@ -207,7 +209,7 @@ gameIO.on("connection", (socket) => {
 
     roomOfInfo.push(roomData);
 
-    console.log("roomOfInfo", roomOfInfo);
+    console.log("게임시작에 대한 룸 정보 =>", roomOfInfo);
 
     gameIO.to(roomID).emit("gameStart");
   });
@@ -219,7 +221,7 @@ gameIO.on("connection", (socket) => {
   socket.on("gameEnd", (data) => {
     roomOfInfo = roomOfInfo.filter((info) => info.id !== roomID);
 
-    console.log("roomOfInfo", roomOfInfo);
+    console.log("게임종료에 대한 룸 정보 =>", roomOfInfo);
     gameIO.to(roomID).emit("gameEnd");
   });
 
@@ -232,16 +234,19 @@ gameIO.on("connection", (socket) => {
       return info.id === roomID;
     });
 
-    console.log("info.users", info.users);
+    console.log(`방${roomID}에 대한 룸 인원 => `, info.users);
 
     // 다음 사용자 인덱스 계산 (순환)
     info.current_index = (info.current_index + 1) % info.users;
 
-    console.log("info.current_index", info.current_index);
+    console.log(
+      `방${roomID}에 게임중 현재 플레이어 인덱스 => `,
+      info.current_index
+    );
 
     next_player = Array.from(targetRoom.users.values())[info.current_index]; //!!!!
 
-    console.log("next_player", next_player);
+    console.log(`방${roomID}에 대한 다음 플레이어 소켓ID => `, next_player);
 
     // 다음 사용자에게 턴을 시작하도록 메시지를 보냅니다.
     gameIO.to(next_player).emit("currentPlayer"); // ????/
@@ -267,17 +272,17 @@ gameIO.on("connection", (socket) => {
 
   // 소켓 연결 종료 시
   socket.on("disconnect", () => {
-    console.log("User disconnected: " + socket.id);
+    console.log(`소켓 ID가 ${socket.id}님 게임 소켓 접속해지 `);
 
     // 연결된 사용자 정보에서 제거
     if (socket.data.username) {
-      console.log("User unregistered: " + socket.data.username);
+      console.log(`${socket.data.username}님 게임 소켓 접속해지 `);
 
       targetRoom.users.delete(socket.data.username);
       targetRoom.userScore.delete(socket.data.username);
-      console.log("disconnect targetRoom", targetRoom);
+      console.log(`게임 소켓 정상해지후 방${roomID} 정보 =>`, targetRoom);
 
-      console.log("rooms", rooms);
+      console.log(`게임 소켓 정상해지후 전체 방 목록 =>`, rooms);
 
       var arr = Array.from(targetRoom.userScore);
       gameIO.to(roomID).emit("userlist", arr);
