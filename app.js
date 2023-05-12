@@ -214,9 +214,9 @@ gameIO.on("connection", (socket) => {
     gameIO.to(roomID).emit("gameStart");
   });
 
-  socket.on("onCount", (data) => {
-    gameIO.to(roomID).emit("onCount", data);
-  });
+  // socket.on("onCount", (data) => {
+  //   gameIO.to(roomID).emit("onCount", data);
+  // });
 
   socket.on("gameEnd", (data) => {
     roomOfInfo = roomOfInfo.filter((info) => info.id !== roomID);

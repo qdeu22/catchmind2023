@@ -26,22 +26,25 @@ initConnect();
 // 게임 시작 버튼을 클릭하면 startGame 함수를 실행합니다.
 var start_button = document.getElementById("start-button");
 
-var countdown = null;
+//var countdown = null;
+
+var isStart = false;
 
 start_button.addEventListener("click", function () {
-  if (countdown === null) {
-    // countdown이 null이면, 즉 게임이 시작되지 않은 상태이면 startGame 함수를 실행합니다.
-
+  if (!isStart) {
     getReader().then((result) => {
       if (result) {
-        startGame();
+        //startGame();
+        gameSocket.emit("gameStart");
+        gameSocket.emit("change-player"); // !
+        isStart = true;
       } else {
         alert("방장만 게임시작 가능합니다.");
       }
     });
   } else {
-    // countdown이 null이 아니면, 즉 이미 게임이 시작된 상태이면 취소합니다.
     cancelGame();
+    isStart = false;
   }
 });
 
@@ -59,34 +62,34 @@ function getReader() {
 }
 
 // 버튼의 텍스트를 변경하는 함수
-function updateButtonText(count) {
-  start_button.innerHTML = `게임시작 카운트 :${count}`;
-}
+// function updateButtonText(count) {
+//   start_button.innerHTML = `게임시작 카운트 :${count}`;
+// }
 
 // 게임 시작 버튼을 클릭할 때 실행되는 함수
-function startGame() {
-  let count = 5; // 초기 카운트는 5입니다.
-  gameSocket.emit("onCount", { count });
+// function startGame() {
+//   let count = 5; // 초기 카운트는 5입니다.
+//   gameSocket.emit("onCount", { count });
 
-  // 1초마다 실행되는 함수
-  countdown = setInterval(function () {
-    count -= 1; // 카운트를 1씩 감소시킵니다.
+//   // 1초마다 실행되는 함수
+//   countdown = setInterval(function () {
+//     count -= 1; // 카운트를 1씩 감소시킵니다.
 
-    gameSocket.emit("onCount", { count });
+//     gameSocket.emit("onCount", { count });
 
-    if (count === 0) {
-      clearInterval(countdown); // 카운트가 0이 되면 interval을 멈춥니다.
+//     if (count === 0) {
+//       clearInterval(countdown); // 카운트가 0이 되면 interval을 멈춥니다.
 
-      // 게임을 실행하는 코드를 여기에 작성합니다.
-      gameSocket.emit("gameStart");
-      gameSocket.emit("change-player"); // !
-    }
-  }, 1000);
-}
+//       // 게임을 실행하는 코드를 여기에 작성합니다.
+//       gameSocket.emit("gameStart");
+//       gameSocket.emit("change-player"); // !
+//     }
+//   }, 1000);
+// }
 // 게임 취소 버튼을 클릭할 때 실행되는 함수
 function cancelGame() {
-  clearInterval(countdown); // interval을 멈춥니다.
-  countdown = null; // countdown 변수를 null로 초기화합니다.
+  // clearInterval(countdown); // interval을 멈춥니다.
+  // countdown = null; // countdown 변수를 null로 초기화합니다.
   gameSocket.emit("gameEnd");
 
   gameSocket.emit("clearUserScore");
@@ -98,7 +101,7 @@ function gameStart() {
   drawingTool = true;
   onCanvasInit();
   onChatInit();
-  onTimer();
+  //onTimer();
 
   isPainterChat();
   isPainterPaint();
@@ -109,10 +112,10 @@ gameSocket.on("gameEnd", gameEnd);
 function gameEnd() {
   drawingTool = false;
   onCanvasInit();
-  stopTimer();
+  //stopTimer();
 
-  clearInterval(turnTimer);
-  turnTimer = null;
+  // clearInterval(turnTimer);
+  // turnTimer = null;
 
   var suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
@@ -123,22 +126,21 @@ function gameEnd() {
 
 gameSocket.on("currentPlayer", currentPlayer);
 
-var turnTimer;
+//var turnTimer;
 
 function currentPlayer() {
   // 30초 뒤 턴 자동 바뀜
-  var count = 10;
+  // var count = 10;
 
-  turnTimer = setInterval(function () {
-    count -= 1; // 카운트를 1씩 감소시킵니다.
+  // turnTimer = setInterval(function () {
+  //   count -= 1; // 카운트를 1씩 감소시킵니다.
 
-    if (count === 0) {
-      clearInterval(turnTimer); // 카운트가 0이 되면 interval을 멈춥니다.
-      gameSocket.emit("change-player");
-    }
-  }, 1000);
+  //   if (count === 0) {
+  //     clearInterval(turnTimer); // 카운트가 0이 되면 interval을 멈춥니다.
+  //     gameSocket.emit("change-player");
+  //   }
+  // }, 1000);
 
-  console.log("hohohoh");
   isPainter = true;
   drawingTool = false;
 
@@ -170,18 +172,18 @@ function onExchange() {
   isPainterPaint();
   onCanvasInit();
 
-  clearInterval(turnTimer);
-  turnTimer = null;
+  // clearInterval(turnTimer);
+  // turnTimer = null;
 
   var suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
 }
 
-gameSocket.on("onCount", onCount);
+// gameSocket.on("onCount", onCount);
 
-function onCount(data) {
-  updateButtonText(data.count); // 버튼의 텍스트를 갱신합니다.
-}
+// function onCount(data) {
+//   updateButtonText(data.count); // 버튼의 텍스트를 갱신합니다.
+// }
 
 gameSocket.on("userlist", onUserList);
 
@@ -214,15 +216,15 @@ function onCorrectPlayer(data) {
 gameSocket.on("escape", onEscape);
 
 function onEscape() {
-  if (countdown) {
-    clearInterval(countdown);
-    countdown = null;
-  }
+  // if (countdown) {
+  //   clearInterval(countdown);
+  //   countdown = null;
+  // }
 
-  if (turnTimer) {
-    clearInterval(turnTimer);
-    turnTimer = null;
-  }
+  // if (turnTimer) {
+  //   clearInterval(turnTimer);
+  //   turnTimer = null;
+  // }
 
   while (ul.firstChild) {
     ul.removeChild(ul.firstChild);
@@ -232,7 +234,7 @@ function onEscape() {
 
   drawingTool = false;
   onCanvasInit();
-  stopTimer();
+  //stopTimer();
 
   var suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
