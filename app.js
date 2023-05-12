@@ -307,6 +307,50 @@ gameIO.on("connection", (socket) => {
   });
 });
 
+///////////////////////////////////////////////////////////////////
+
+const timerIO = io.of("/timer");
+
+timerIO.on("connection", function (socket) {
+  var roomID;
+
+  socket.on("joinRoom", (roomId) => {
+    roomID = roomId;
+    socket.join(roomId);
+    console.log(`${roomId}방에 타이머 소켓 연결`);
+  });
+
+  socket.on("elapsedTime", function () {
+    // 시작 버튼을 누르면 실행될 로직
+    var elapsedTime = 0;
+
+    var intervalId = setInterval(function () {
+      elapsedTime++;
+
+      timerIO.to(roomID).emit("elapsedTime", {
+        elapsedTime: elapsedTime,
+      });
+    }, 1000);
+  });
+
+  socket.on("remainingTime", function () {
+    // 시작 버튼을 누르면 실행될 로직
+    var remainingTime = 60;
+
+    var intervalId = setInterval(function () {
+      remainingTime--;
+
+      timerIO.to(roomID).emit("remainingTime", {
+        remainingTime: remainingTime,
+      });
+
+      if (remainingTime === 0) {
+        clearInterval(intervalId);
+      }
+    }, 1000);
+  });
+});
+
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

@@ -1,28 +1,27 @@
-let time = 0;
-let timerInterval;
+const timerSocket = io("/timer");
 
-function startTimer() {
-  timerInterval = setInterval(updateTimer, 1000);
-}
+timerSocket.emit("joinRoom", roomId);
 
-function updateTimer() {
-  time++;
-  const hours = Math.floor(time / 3600)
-    .toString()
-    .padStart(2, "0");
-  const minutes = Math.floor((time % 3600) / 60)
-    .toString()
-    .padStart(2, "0");
-  const seconds = (time % 60).toString().padStart(2, "0");
-  document.getElementById("timer").innerHTML = `${hours}:${minutes}:${seconds}`;
-}
+var startButton = document.getElementById("start-button");
+startButton.onclick = function () {
+  timerSocket.emit("elapsedTime"); // 서버에 요청을 보냄
+  timerSocket.emit("remainingTime"); // 서버에 요청을 보냄
+};
 
-function stopTimer() {
-  clearInterval(timerInterval);
-  time = 0;
-  document.getElementById("timer").innerHTML = "00:00:00";
-}
+timerSocket.on("elapsedTime", function (data) {
+  // 서버로부터 실시간 카운트를 받음
+  var elapsedTime = data.elapsedTime;
 
-function onTimer() {
-  startTimer();
-}
+  // HTML 요소를 업데이트
+  var elapsedTimeElement = document.getElementById("elapsed-time");
+  elapsedTimeElement.innerHTML = elapsedTime;
+});
+
+timerSocket.on("remainingTime", function (data) {
+  // 서버로부터 실시간 카운트를 받음
+  var remainingTime = data.remainingTime;
+
+  // HTML 요소를 업데이트
+  var remainingTimeElement = document.getElementById("remaining-time");
+  remainingTimeElement.innerHTML = remainingTime;
+});
