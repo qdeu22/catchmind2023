@@ -210,3 +210,38 @@ function onCorrectPlayer(data) {
   ul.appendChild(li); // 리스트에 아이템 추가
   scrollToBottom(); // 스크롤을 최하단으로 내림
 }
+
+gameSocket.on("escape", onEscape);
+
+function onEscape() {
+  if (countdown) {
+    clearInterval(countdown);
+    countdown = null;
+  }
+
+  if (turnTimer) {
+    clearInterval(turnTimer);
+    turnTimer = null;
+  }
+
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild);
+  }
+
+  gameSocket.emit("clearUserScore");
+
+  drawingTool = false;
+  onCanvasInit();
+  stopTimer();
+
+  var suggested_word = document.getElementById("suggested-word");
+  suggested_word.innerText = "-";
+
+  isPainter = true;
+  start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
+
+  const li = document.createElement("li"); // 새로운 리스트 아이템 생성
+  li.textContent = "탈주자 발생으로 게임이 강제 종료되었습니다."; // 리스트 아이템에 메시지 추가
+  li.classList.add("message"); // message 클래스 추가
+  ul.appendChild(li); // 리스트에 아이템 추가
+}

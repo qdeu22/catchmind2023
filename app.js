@@ -278,6 +278,19 @@ gameIO.on("connection", (socket) => {
     if (socket.data.username) {
       console.log(`${socket.data.username}님 게임 소켓 접속해지 `);
 
+      var myRoom = roomOfInfo.find((info) => {
+        return info.id === roomID;
+      });
+
+      if (myRoom) {
+        console.log("게임중인 방인데 탈주 발생 =>", myRoom);
+        roomOfInfo = roomOfInfo.filter((info) => info.id !== roomID);
+
+        console.log("탈주 발생 후 강제종료된 방 삭제후 룸 정보 =>", roomOfInfo);
+
+        gameIO.to(roomID).emit("escape");
+      }
+
       targetRoom.users.delete(socket.data.username);
       targetRoom.userScore.delete(socket.data.username);
       console.log(`게임 소켓 정상해지후 방${roomID} 정보 =>`, targetRoom);
