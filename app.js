@@ -323,28 +323,45 @@ timerIO.on("connection", function (socket) {
   });
 
   socket.on("start", function () {
+    var myTimer = timerInfo.find((info) => {
+      return info.id === roomID;
+    });
+
+    // 게임 대기 중 다시 눌렀을 경우
+    if (myTimer) {
+      timerInfo = timerInfo.filter((info) => info.id !== roomID);
+      clearInterval(myTimer.countInterval);
+      timerIO.to(roomID).emit("waitstop");
+      return;
+    }
+
     const timer = {
       id: roomID,
       elapsedTime: 0,
       remainingTime: 60,
       elapsedTimeInterval: null,
       remainingTimeInterval: null,
+      countInterval: null,
     };
     timerInfo.push(timer);
 
     console.log("저장된 모든 방의 타이머 =>", timerInfo);
 
+    myTimer = timerInfo.find((info) => {
+      return info.id === roomID;
+    });
+
     var count = 5;
 
     timerIO.to(roomID).emit("count", count);
 
-    var countInterval = setInterval(function () {
+    myTimer.countInterval = setInterval(function () {
       count--;
 
       timerIO.to(roomID).emit("count", count);
 
       if (count === 0) {
-        clearInterval(countInterval);
+        clearInterval(myTimer.countInterval);
         timerIO.to(roomID).emit("start");
       }
     }, 1000);

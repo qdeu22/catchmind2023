@@ -26,8 +26,6 @@ initConnect();
 // 게임 시작 버튼을 클릭하면 startGame 함수를 실행합니다.
 var start_button = document.getElementById("start-button");
 
-//var countdown = null;
-
 var isStart = false;
 
 var boss = false; // 방장
@@ -185,4 +183,18 @@ function onEscape() {
   li.textContent = "탈주자 발생으로 게임이 강제 종료되었습니다."; // 리스트 아이템에 메시지 추가
   li.classList.add("message"); // message 클래스 추가
   ul.appendChild(li); // 리스트에 아이템 추가
+
+  // 방장만!!
+  if (boss) {
+    console.log("hihihihihihihihihihihihi");
+    timerSocket.emit("stop");
+    boss = false;
+    isStart = false; //이게 중요!
+  }
+
+  var elapsedTimeElement = document.getElementById("elapsed-time");
+  elapsedTimeElement.innerHTML = 0;
+
+  var remainingTimeElement = document.getElementById("remaining-time");
+  remainingTimeElement.innerHTML = 60;
 }

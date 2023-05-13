@@ -38,3 +38,9 @@ timerSocket.on("count", onCount);
 function onCount(count) {
   start_button.innerHTML = `게임시작 카운트 :${count}`;
 }
+
+timerSocket.on("waitstop", onWait);
+
+function onWait() {
+  start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
+}
