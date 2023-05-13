@@ -13,7 +13,7 @@ function scrollToBottom() {
 const chat_username = document.querySelector(".chat-username");
 chat_username.textContent = `${username}님 반갑습니다!!`;
 
-var isPainter = true;
+let isPainter = true;
 
 form.addEventListener("submit", (event) => {
   event.preventDefault(); // 폼 기본 동작 방지

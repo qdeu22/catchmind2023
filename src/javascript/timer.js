@@ -4,19 +4,19 @@ timerSocket.emit("joinRoom", roomId);
 
 timerSocket.on("elapsedTime", function (data) {
   // 서버로부터 실시간 카운트를 받음
-  var elapsedTime = data.elapsedTime;
+  let elapsedTime = data.elapsedTime;
 
   // HTML 요소를 업데이트
-  var elapsedTimeElement = document.getElementById("elapsed-time");
+  let elapsedTimeElement = document.getElementById("elapsed-time");
   elapsedTimeElement.innerHTML = elapsedTime;
 });
 
 timerSocket.on("remainingTime", function (data) {
   // 서버로부터 실시간 카운트를 받음
-  var remainingTime = data.remainingTime;
+  let remainingTime = data.remainingTime;
 
   // HTML 요소를 업데이트
-  var remainingTimeElement = document.getElementById("remaining-time");
+  let remainingTimeElement = document.getElementById("remaining-time");
   remainingTimeElement.innerHTML = remainingTime;
 });
 

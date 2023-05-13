@@ -24,7 +24,7 @@ canvasSocket.emit("joinRoom", roomId);
 
 let painting = false;
 
-var drawingTool = false; // 접속자들의 그릴 권한 통제
+let drawingTool = false; // 접속자들의 그릴 권한 통제
 
 function startPainting() {
   if (drawingTool) {

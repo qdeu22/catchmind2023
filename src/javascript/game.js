@@ -24,11 +24,11 @@ function initConnect() {
 initConnect();
 
 // 게임 시작 버튼을 클릭하면 startGame 함수를 실행합니다.
-var start_button = document.getElementById("start-button");
+let start_button = document.getElementById("start-button");
 
-var isStart = false;
+let isStart = false;
 
-var boss = false; // 방장
+let boss = false; // 방장
 
 start_button.addEventListener("click", function () {
   if (!isStart) {
@@ -80,22 +80,20 @@ function gameEnd() {
   drawingTool = false;
   onCanvasInit();
 
-  var suggested_word = document.getElementById("suggested-word");
+  let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
 
   isPainter = true;
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
 
-  var elapsedTimeElement = document.getElementById("elapsed-time");
+  let elapsedTimeElement = document.getElementById("elapsed-time");
   elapsedTimeElement.innerHTML = 0;
 
-  var remainingTimeElement = document.getElementById("remaining-time");
+  let remainingTimeElement = document.getElementById("remaining-time");
   remainingTimeElement.innerHTML = 60;
 }
 
 gameSocket.on("currentPlayer", currentPlayer);
-
-//var turnTimer;
 
 function currentPlayer() {
   isPainter = true;
@@ -106,7 +104,7 @@ function currentPlayer() {
 }
 
 function getWord() {
-  var suggested_word = document.getElementById("suggested-word");
+  let suggested_word = document.getElementById("suggested-word");
   fetch("/getRandomWord")
     .then((response) => response.json())
     .then((data) => {
@@ -129,7 +127,7 @@ function onExchange() {
   isPainterPaint();
   onCanvasInit();
 
-  var suggested_word = document.getElementById("suggested-word");
+  let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
 }
 
@@ -173,7 +171,7 @@ function onEscape() {
   drawingTool = false;
   onCanvasInit();
 
-  var suggested_word = document.getElementById("suggested-word");
+  let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
 
   isPainter = true;
@@ -192,9 +190,9 @@ function onEscape() {
     isStart = false; //이게 중요!
   }
 
-  var elapsedTimeElement = document.getElementById("elapsed-time");
+  let elapsedTimeElement = document.getElementById("elapsed-time");
   elapsedTimeElement.innerHTML = 0;
 
-  var remainingTimeElement = document.getElementById("remaining-time");
+  let remainingTimeElement = document.getElementById("remaining-time");
   remainingTimeElement.innerHTML = 60;
 }

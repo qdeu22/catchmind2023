@@ -3,7 +3,7 @@ const roomModalClose = document.getElementById("room-modal-close");
 
 const inputRoomName = document.getElementById("room-name");
 
-var createBtn = document.getElementById("create-room");
+let createBtn = document.getElementById("create-room");
 
 createBtn.addEventListener("click", createRoomModal);
 
@@ -16,7 +16,7 @@ roomModalClose.onclick = function () {
   inputRoomName.value = "";
 };
 
-var deleteBtn = document.getElementById("delete-room");
+let deleteBtn = document.getElementById("delete-room");
 
 deleteBtn.addEventListener("click", deleteRoom);
 
