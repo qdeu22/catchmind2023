@@ -22,11 +22,48 @@ const rooms = [];
 
 const wordModule = require("./lib/file");
 
-var randomWord;
+let randomWord;
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
+
+app.get("/rooms", (req, res) => {
+  res.json(rooms);
+});
+
+app.get("/getRandomWord", (req, res) => {
+  // getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
+  randomWord = wordModule.getRandomWord().trim();
+  const data = { message: randomWord };
+  res.json(data);
+});
+
+app.get("/getReader", (req, res) => {
+  const id = req.query.id;
+  const targetRoom = rooms.find((room) => {
+    return room.id === parseInt(id);
+  });
+  const [reader, readerId] = targetRoom.users.entries().next().value;
+  const data = { reader, readerId };
+  console.log(
+    `${id}방의 방장은 ${reader}님 입니다. 그리고 소켓 ID는 ${readerId}입니다.`
+  );
+  res.json(data);
+});
+
+app.post("/checkChat", (req, res) => {
+  let clientVal = req.body.message;
+  let serverVal = randomWord;
+
+  if (clientVal === serverVal) {
+    res.json({ result: true });
+  } else {
+    res.json({ result: false });
+  }
+});
+
+//////////////////////////////////////////////////////////////
 
 app.get("/room", (req, res) => {
   res.sendFile(__dirname + "/views/room.html");
@@ -57,7 +94,7 @@ app.post("/room/create", (req, res) => {
 app.get("/room/:id", (req, res) => {
   const roomId = req.params.id;
 
-  var room = rooms.find((room) => {
+  const room = rooms.find((room) => {
     return room.id === parseInt(roomId); // parseInt 꼭하기
   });
 
@@ -72,50 +109,13 @@ app.get("/room/:id", (req, res) => {
   }
 });
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-app.get("/rooms", (req, res) => {
-  res.json(rooms);
-});
-
-app.get("/getRandomWord", (req, res) => {
-  // getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
-  randomWord = wordModule.getRandomWord().trim();
-  const data = { message: randomWord };
-  res.json(data);
-});
-
-app.get("/getReader", (req, res) => {
-  const id = req.query.id;
-  var targetRoom = rooms.find((room) => {
-    return room.id === parseInt(id);
-  });
-  const [reader, readerId] = targetRoom.users.entries().next().value;
-  const data = { reader, readerId };
-  console.log(
-    `${id}방의 방장은 ${reader}님 입니다. 그리고 소켓 ID는 ${readerId}입니다.`
-  );
-  res.json(data);
-});
-
-app.post("/checkChat", (req, res) => {
-  var clientVal = req.body.message;
-  var serverVal = randomWord;
-
-  if (clientVal === serverVal) {
-    res.json({ result: true });
-  } else {
-    res.json({ result: false });
-  }
-});
-
 ///////////////////////////////////////////////////////////////////
 
 const canvasIO = io.of("/canvas");
 
 canvasIO.on("connection", (socket) => {
   console.log("캔버스 소켓에 정상접속");
-  var roomID;
+  let roomID;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
@@ -139,7 +139,7 @@ const chatIO = io.of("/chat");
 chatIO.on("connection", (socket) => {
   console.log("채팅 소켓에 정상접속");
 
-  var roomID;
+  let roomID;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
@@ -160,15 +160,15 @@ chatIO.on("connection", (socket) => {
 
 const gameIO = io.of("/game");
 
-var roomOfInfo = [];
+let roomOfInfo = [];
 
 gameIO.on("connection", (socket) => {
   console.log(`게임 소켓에 소켓ID ${socket.id}님이 정상접속`);
 
-  var roomID;
-  var targetRoom;
+  let roomID;
+  let targetRoom;
 
-  var info;
+  let info;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
@@ -193,7 +193,7 @@ gameIO.on("connection", (socket) => {
 
     console.log(`사용자 등록후 모든 방목록의 세부 정보 =>`, rooms);
 
-    var arr = Array.from(targetRoom.userScore);
+    let arr = Array.from(targetRoom.userScore);
 
     gameIO.to(roomID).emit("members", targetRoom.users.size);
 
@@ -213,10 +213,6 @@ gameIO.on("connection", (socket) => {
 
     gameIO.to(roomID).emit("gameStart");
   });
-
-  // socket.on("onCount", (data) => {
-  //   gameIO.to(roomID).emit("onCount", data);
-  // });
 
   socket.on("gameEnd", (data) => {
     roomOfInfo = roomOfInfo.filter((info) => info.id !== roomID);
@@ -258,7 +254,7 @@ gameIO.on("connection", (socket) => {
       targetRoom.userScore.get(data.username) + 1
     );
     gameIO.to(roomID).emit("correct-player", { username: data.username });
-    var arr = Array.from(targetRoom.userScore);
+    let arr = Array.from(targetRoom.userScore);
     gameIO.to(roomID).emit("userlist", arr);
   });
 
@@ -266,7 +262,7 @@ gameIO.on("connection", (socket) => {
     targetRoom.userScore.forEach(function (value, key) {
       targetRoom.userScore.set(key, 0);
     });
-    var arr = Array.from(targetRoom.userScore);
+    let arr = Array.from(targetRoom.userScore);
     gameIO.to(roomID).emit("userlist", arr);
   });
 
@@ -278,7 +274,7 @@ gameIO.on("connection", (socket) => {
     if (socket.data.username) {
       console.log(`${socket.data.username}님 게임 소켓 접속해지 `);
 
-      var myRoom = roomOfInfo.find((info) => {
+      let myRoom = roomOfInfo.find((info) => {
         return info.id === roomID;
       });
 
@@ -297,7 +293,7 @@ gameIO.on("connection", (socket) => {
 
       console.log(`게임 소켓 정상해지후 전체 방 목록 =>`, rooms);
 
-      var arr = Array.from(targetRoom.userScore);
+      let arr = Array.from(targetRoom.userScore);
       gameIO.to(roomID).emit("userlist", arr);
 
       gameIO.to(roomID).emit("members", targetRoom.users.size);
@@ -311,10 +307,10 @@ gameIO.on("connection", (socket) => {
 
 const timerIO = io.of("/timer");
 
-var timerInfo = [];
+let timerInfo = [];
 
 timerIO.on("connection", function (socket) {
-  var roomID;
+  let roomID;
 
   socket.on("joinRoom", (roomId) => {
     roomID = roomId;
@@ -323,7 +319,7 @@ timerIO.on("connection", function (socket) {
   });
 
   socket.on("start", function () {
-    var myTimer = timerInfo.find((info) => {
+    let myTimer = timerInfo.find((info) => {
       return info.id === roomID;
     });
 
@@ -351,7 +347,7 @@ timerIO.on("connection", function (socket) {
       return info.id === roomID;
     });
 
-    var count = 5;
+    let count = 5;
 
     timerIO.to(roomID).emit("count", count);
 
@@ -369,7 +365,7 @@ timerIO.on("connection", function (socket) {
 
   socket.on("elapsedTime", function () {
     // 경과시간
-    var myTimer = timerInfo.find((info) => {
+    let myTimer = timerInfo.find((info) => {
       return info.id === roomID;
     });
 
@@ -388,7 +384,7 @@ timerIO.on("connection", function (socket) {
 
   socket.on("remainingTime", function () {
     // 남은 시간
-    var myTimer = timerInfo.find((info) => {
+    let myTimer = timerInfo.find((info) => {
       return info.id === roomID;
     });
 
@@ -408,7 +404,7 @@ timerIO.on("connection", function (socket) {
   });
 
   socket.on("stop", function () {
-    var myTimer = timerInfo.find((info) => {
+    let myTimer = timerInfo.find((info) => {
       return info.id === roomID;
     });
 
