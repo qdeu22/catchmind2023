@@ -2,12 +2,6 @@ const timerSocket = io("/timer");
 
 timerSocket.emit("joinRoom", roomId);
 
-var startButton = document.getElementById("start-button");
-startButton.onclick = function () {
-  timerSocket.emit("elapsedTime"); // 서버에 요청을 보냄
-  timerSocket.emit("remainingTime"); // 서버에 요청을 보냄
-};
-
 timerSocket.on("elapsedTime", function (data) {
   // 서버로부터 실시간 카운트를 받음
   var elapsedTime = data.elapsedTime;
@@ -25,3 +19,22 @@ timerSocket.on("remainingTime", function (data) {
   var remainingTimeElement = document.getElementById("remaining-time");
   remainingTimeElement.innerHTML = remainingTime;
 });
+
+timerSocket.on("start", onStart);
+
+function onStart() {
+  if (boss) {
+    gameSocket.emit("gameStart");
+    gameSocket.emit("change-player");
+    isStart = true;
+  }
+
+  timerSocket.emit("elapsedTime"); // !
+  timerSocket.emit("remainingTime"); // !
+}
+
+timerSocket.on("count", onCount);
+
+function onCount(count) {
+  start_button.innerHTML = `게임시작 카운트 :${count}`;
+}

@@ -320,6 +320,23 @@ timerIO.on("connection", function (socket) {
     console.log(`${roomId}방에 타이머 소켓 연결`);
   });
 
+  socket.on("start", function () {
+    var count = 5;
+
+    timerIO.to(roomID).emit("count", count);
+
+    var countInterval = setInterval(function () {
+      count--;
+
+      timerIO.to(roomID).emit("count", count);
+
+      if (count === 0) {
+        clearInterval(countInterval);
+        timerIO.to(roomID).emit("start");
+      }
+    }, 1000);
+  });
+
   socket.on("elapsedTime", function () {
     // 시작 버튼을 누르면 실행될 로직
     var elapsedTime = 0;
