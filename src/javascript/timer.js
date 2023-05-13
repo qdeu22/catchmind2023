@@ -27,10 +27,10 @@ function onStart() {
     gameSocket.emit("gameStart");
     gameSocket.emit("change-player");
     isStart = true;
-  }
 
-  timerSocket.emit("elapsedTime"); // !
-  timerSocket.emit("remainingTime"); // !
+    timerSocket.emit("elapsedTime"); // !
+    timerSocket.emit("remainingTime"); // !
+  }
 }
 
 timerSocket.on("count", onCount);

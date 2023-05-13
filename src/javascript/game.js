@@ -47,6 +47,8 @@ start_button.addEventListener("click", function () {
     gameSocket.emit("clearUserScore");
     isStart = false;
     boss = false;
+
+    timerSocket.emit("stop");
   }
 });
 
@@ -85,6 +87,12 @@ function gameEnd() {
 
   isPainter = true;
   start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
+
+  var elapsedTimeElement = document.getElementById("elapsed-time");
+  elapsedTimeElement.innerHTML = 0;
+
+  var remainingTimeElement = document.getElementById("remaining-time");
+  remainingTimeElement.innerHTML = 60;
 }
 
 gameSocket.on("currentPlayer", currentPlayer);
