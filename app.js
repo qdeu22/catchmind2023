@@ -311,6 +311,8 @@ gameIO.on("connection", (socket) => {
 
 const timerIO = io.of("/timer");
 
+var timerInfo = [];
+
 timerIO.on("connection", function (socket) {
   var roomID;
 
@@ -321,6 +323,11 @@ timerIO.on("connection", function (socket) {
   });
 
   socket.on("start", function () {
+    const timer = { id: roomID, elapsedTime: 0, remainingTime: 60 };
+    timerInfo.push(timer);
+
+    console.log("저장된 모든 방의 타이머 =>", timerInfo);
+
     var count = 5;
 
     timerIO.to(roomID).emit("count", count);
@@ -338,33 +345,47 @@ timerIO.on("connection", function (socket) {
   });
 
   socket.on("elapsedTime", function () {
-    // 시작 버튼을 누르면 실행될 로직
-    var elapsedTime = 0;
+    // 경과시간
+    var myTimer = timerInfo.find((info) => {
+      return info.id === roomID;
+    });
+
+    myTimer.elapsedTime = 0;
 
     var intervalId = setInterval(function () {
-      elapsedTime++;
+      myTimer.elapsedTime++;
+
+      // console.log(`방${roomID}의 경과시간 =>`, timerInfo);
 
       timerIO.to(roomID).emit("elapsedTime", {
-        elapsedTime: elapsedTime,
+        elapsedTime: myTimer.elapsedTime,
       });
     }, 1000);
   });
 
   socket.on("remainingTime", function () {
-    // 시작 버튼을 누르면 실행될 로직
-    var remainingTime = 60;
+    // 남은 시간
+    var myTimer = timerInfo.find((info) => {
+      return info.id === roomID;
+    });
+
+    myTimer.remainingTime = 60;
 
     var intervalId = setInterval(function () {
-      remainingTime--;
+      myTimer.remainingTime--;
 
       timerIO.to(roomID).emit("remainingTime", {
-        remainingTime: remainingTime,
+        remainingTime: myTimer.remainingTime,
       });
 
-      if (remainingTime === 0) {
+      if (myTimer.remainingTime === 0) {
         clearInterval(intervalId);
       }
     }, 1000);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("타이머 소켓에 접근해지");
   });
 });
 
