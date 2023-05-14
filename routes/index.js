@@ -2,7 +2,10 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 
-const rooms = require("../rooms");
+const { rooms } = require("../rooms");
+
+const wordModule = require("../lib/file");
+let randomWord;
 
 router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "views", "index.html"));
