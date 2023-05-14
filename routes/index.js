@@ -33,6 +33,21 @@ router.get("/getReader", (req, res) => {
   res.json(data);
 });
 
+router.get("/getPlayer", (req, res) => {
+  const id = req.query.id;
+  const targetRoom = rooms.find((room) => {
+    return room.id === parseInt(id);
+  });
+
+  let data = true;
+  const number = targetRoom.users.size;
+  if (number < 2) {
+    data = false;
+  }
+  console.log(`${id}번 방의 인원은 ${number}명 입니다.`);
+  res.json(data);
+});
+
 router.post("/checkChat", (req, res) => {
   let clientVal = req.body.message;
   let serverVal = randomWord;

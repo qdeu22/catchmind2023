@@ -32,14 +32,23 @@ let boss = false; // 방장
 
 start_button.addEventListener("click", function () {
   if (!isStart) {
-    getReader().then((result) => {
-      if (result) {
-        boss = true;
-        timerSocket.emit("start");
-      } else {
-        alert("방장만 게임시작 가능합니다.");
-      }
-    });
+    fetch(`/getPlayer?id=${roomId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          getReader().then((result) => {
+            if (result) {
+              boss = true;
+              timerSocket.emit("start");
+            } else {
+              alert("방장만 게임시작 가능합니다.");
+            }
+          });
+        } else {
+          alert("2명이상이어야 게임시작 가능합니다.");
+        }
+      })
+      .catch((error) => console.error(error));
   } else {
     gameSocket.emit("gameEnd");
     gameSocket.emit("clearUserScore");
@@ -195,7 +204,5 @@ function onEscape() {
 gameSocket.on("random-escape", onRandomEscape);
 
 function onRandomEscape() {
-  console.log("ㅋㅋ 너구나");
-
   timerSocket.emit("stop");
 }
