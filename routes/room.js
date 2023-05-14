@@ -11,6 +11,13 @@ router.get("/", (req, res) => {
 router.post("/create", (req, res) => {
   const roomName = req.body.roomName;
 
+  if (roomName === null || roomName === "") {
+    res.json({
+      success: false,
+    });
+    return;
+  }
+
   // 방 생성 작업 수행
   const newRoom = {
     id: rooms.length + 1,
