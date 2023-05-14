@@ -49,11 +49,12 @@ function createRoom() {
         const roomListItem = document.createElement("li");
         const roomLink = document.createElement("a");
         roomLink.href = `/room/${data.roomId}`;
+        roomLink.target = "_blank";
         roomLink.textContent = roomName;
         roomListItem.appendChild(roomLink);
         roomList.appendChild(roomListItem);
 
-        window.location.href = `/room/${data.roomId}`;
+        window.open(`/room/${data.roomId}`, "_blank");
       } else {
         // 방 생성에 실패한 경우
         alert("방 생성에 실패했습니다.");
