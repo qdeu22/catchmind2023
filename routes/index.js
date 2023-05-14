@@ -4,6 +4,8 @@ const router = express.Router();
 
 const { rooms } = require("../rooms");
 
+const roomOfInfo = require("../roomOfInfo");
+
 const wordModule = require("../lib/file");
 let randomWord;
 
@@ -59,4 +61,16 @@ router.post("/checkChat", (req, res) => {
   }
 });
 
+router.post("/checkRoom", (req, res) => {
+  const roomId = req.body.roomId;
+
+  let myRoom = roomOfInfo.find(roomId); // 와 이거때문에 와 싱글톤으로 해결...
+
+  let data = false;
+  // 게임중이면
+  if (myRoom) {
+    data = true;
+  }
+  res.json(data);
+});
 module.exports = router;

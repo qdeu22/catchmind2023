@@ -3,7 +3,9 @@ const roomModalClose = document.getElementById("room-modal-close");
 
 const inputRoomName = document.getElementById("room-name");
 
-let createBtn = document.getElementById("create-room");
+const roomList = document.getElementById("room-list");
+
+const createBtn = document.getElementById("create-room");
 
 createBtn.addEventListener("click", createRoomModal);
 
@@ -49,8 +51,8 @@ function createRoom() {
         const roomListItem = document.createElement("li");
         const roomLink = document.createElement("a");
         roomLink.href = `/room/${data.roomId}`;
-        roomLink.target = "_blank";
         roomLink.textContent = roomName;
+        roomLink.setAttribute("data-room-id", `${data.roomId}`);
         roomListItem.appendChild(roomLink);
         roomList.appendChild(roomListItem);
 
@@ -77,6 +79,7 @@ fetch("/rooms")
       const roomLink = document.createElement("a");
       roomLink.href = `/room/${room.id}`;
       roomLink.textContent = room.name;
+      roomLink.setAttribute("data-room-id", `${room.id}`);
       roomListItem.appendChild(roomLink);
       roomList.appendChild(roomListItem);
     });
@@ -87,3 +90,32 @@ function deleteRoom() {
   // 방 삭제 기능
   alert("선택한 방을 삭제합니다.");
 }
+
+roomList.addEventListener("click", function (event) {
+  // 클릭한 요소가 a 요소인 경우에 대해 처리
+  if (event.target && event.target.nodeName === "A") {
+    event.preventDefault(); // 기본 동작 방지
+    const roomId = event.target.dataset.roomId;
+    console.log(`Room ${roomId} clicked`);
+    // fetch API 호출
+    fetch("/checkRoom", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ roomId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // fetch API 호출 결과 처리
+        if (!data) {
+          window.open(`/room/${roomId}`, "_blank"); // 링크 열기
+        } else {
+          alert("현재 게임중인 방입니다");
+        }
+      })
+      .catch((error) => {
+        console.error("fetch API 호출 중 오류가 발생했습니다.", error);
+      });
+  }
+});
