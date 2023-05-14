@@ -18,8 +18,6 @@ app.use(express.static(path.join(__dirname, "src")));
 // JSON 형식의 요청 바디를 파싱하기 위한 미들웨어 등록
 app.use(bodyParser.json());
 
-const { rooms, roomOfInfo, timerInfo } = require("./rooms");
-
 const indexRouter = require("./routes/index");
 const roomRouter = require("./routes/room");
 

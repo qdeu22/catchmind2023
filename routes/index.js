@@ -27,11 +27,9 @@ router.get("/getReader", (req, res) => {
   const targetRoom = rooms.find((room) => {
     return room.id === parseInt(id);
   });
-  const [reader, readerId] = targetRoom.users.entries().next().value;
-  const data = { reader, readerId };
-  console.log(
-    `${id}방의 방장은 ${reader}님 입니다. 그리고 소켓 ID는 ${readerId}입니다.`
-  );
+  const [reader] = targetRoom.users.entries().next().value;
+  const data = { reader };
+  console.log(`${id}번 방의 방장은 ${reader}님 입니다.`);
   res.json(data);
 });
 
