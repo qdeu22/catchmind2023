@@ -1,14 +1,14 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
+const bodyParser = require("body-parser");
+const socketIO = require("socket.io");
+
 const app = express();
 const port = 3000;
 
 const server = http.createServer(app);
-const socketIO = require("socket.io");
 const io = socketIO(server);
-
-const bodyParser = require("body-parser");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -18,98 +18,17 @@ app.use(express.static(path.join(__dirname, "src")));
 // JSON 형식의 요청 바디를 파싱하기 위한 미들웨어 등록
 app.use(bodyParser.json());
 
-const rooms = [];
-
 const wordModule = require("./lib/file");
+
+const rooms = require("./rooms");
 
 let randomWord;
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/views/index.html");
-});
+const indexRouter = require("./routes/index");
+const roomRouter = require("./routes/room");
 
-app.get("/rooms", (req, res) => {
-  res.json(rooms);
-});
-
-app.get("/getRandomWord", (req, res) => {
-  // getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
-  randomWord = wordModule.getRandomWord().trim();
-  const data = { message: randomWord };
-  res.json(data);
-});
-
-app.get("/getReader", (req, res) => {
-  const id = req.query.id;
-  const targetRoom = rooms.find((room) => {
-    return room.id === parseInt(id);
-  });
-  const [reader, readerId] = targetRoom.users.entries().next().value;
-  const data = { reader, readerId };
-  console.log(
-    `${id}방의 방장은 ${reader}님 입니다. 그리고 소켓 ID는 ${readerId}입니다.`
-  );
-  res.json(data);
-});
-
-app.post("/checkChat", (req, res) => {
-  let clientVal = req.body.message;
-  let serverVal = randomWord;
-
-  if (clientVal === serverVal) {
-    res.json({ result: true });
-  } else {
-    res.json({ result: false });
-  }
-});
-
-//////////////////////////////////////////////////////////////
-
-app.get("/room", (req, res) => {
-  res.sendFile(__dirname + "/views/room.html");
-});
-
-app.post("/room/create", (req, res) => {
-  const roomName = req.body.roomName;
-
-  // 방 생성 작업 수행
-  const newRoom = {
-    id: rooms.length + 1,
-    name: roomName,
-    users: new Map(),
-    userScore: new Map(),
-  };
-
-  rooms.push(newRoom);
-  console.log("생성된 방 목록 배열 =>", rooms);
-
-  // 생성된 방 정보를 클라이언트에게 응답
-  res.json({
-    success: true,
-    roomId: newRoom.id,
-  });
-});
-
-// /room/:id 라우팅 경로에서 roomId를 매개변수로 사용합니다.
-app.get("/room/:id", (req, res) => {
-  const roomId = req.params.id;
-
-  const room = rooms.find((room) => {
-    return room.id === parseInt(roomId); // parseInt 꼭하기
-  });
-
-  console.log(`/room/${roomId}를 통해 찾은 방 객체 =>`, room);
-
-  if (room) {
-    // roomId가 배열의 요소로 포함되어 있을 경우
-    res.sendFile(__dirname + "/views/channel.html");
-  } else {
-    // roomId가 배열의 요소로 포함되어 있지 않을 경우
-    res.status(404).json({ error: `방 ${roomId}은 존재하지 않습니다.` });
-  }
-});
-
-///////////////////////////////////////////////////////////////////
+app.use("/", indexRouter);
+app.use("/room", roomRouter);
 
 const canvasIO = io.of("/canvas");
 
