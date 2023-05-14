@@ -156,7 +156,7 @@ function onCorrectPlayer(data) {
   li.textContent = `${data.username}님이 정답을 맞쳤습니다.`; // 리스트 아이템에 메시지 추가
   li.classList.add("message"); // message 클래스 추가
   ul.appendChild(li); // 리스트에 아이템 추가
-  scrollToBottom(); // 스크롤을 최하단으로 내림
+  ul.scrollTop = ul.scrollHeight; // 스크롤을 최하단으로 내림
 }
 
 gameSocket.on("escape", onEscape);
@@ -182,17 +182,20 @@ function onEscape() {
   li.classList.add("message"); // message 클래스 추가
   ul.appendChild(li); // 리스트에 아이템 추가
 
-  // 방장만!!
-  if (boss) {
-    console.log("hihihihihihihihihihihihi");
-    timerSocket.emit("stop");
-    boss = false;
-    isStart = false; //이게 중요!
-  }
+  boss = false;
+  isStart = false;
 
   let elapsedTimeElement = document.getElementById("elapsed-time");
   elapsedTimeElement.innerHTML = 0;
 
   let remainingTimeElement = document.getElementById("remaining-time");
   remainingTimeElement.innerHTML = 60;
+}
+
+gameSocket.on("random-escape", onRandomEscape);
+
+function onRandomEscape() {
+  console.log("ㅋㅋ 너구나");
+
+  timerSocket.emit("stop");
 }
