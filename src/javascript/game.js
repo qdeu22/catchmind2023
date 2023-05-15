@@ -114,7 +114,7 @@ function currentPlayer() {
 
 function getWord() {
   let suggested_word = document.getElementById("suggested-word");
-  fetch("/getRandomWord")
+  fetch(`/getRandomWord?id=${roomId}`)
     .then((response) => response.json())
     .then((data) => {
       suggested_word.innerText = data.message;

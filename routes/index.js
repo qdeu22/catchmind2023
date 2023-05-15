@@ -5,8 +5,9 @@ const router = express.Router();
 const rooms = require("../roomss");
 const roomOfInfo = require("../roomOfInfo");
 
-const wordModule = require("../lib/file");
-let randomWord;
+const wordGenerator = require("../lib/file");
+
+const roomOfWord = new Map();
 
 router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "views", "index.html"));
@@ -17,9 +18,13 @@ router.get("/rooms", (req, res) => {
 });
 
 router.get("/getRandomWord", (req, res) => {
-  // getRandomWord 함수를 호출하여 무작위 단어를 얻습니다.
-  randomWord = wordModule.getRandomWord().trim();
-  const data = { message: randomWord };
+  const id = req.query.id;
+
+  roomOfWord.set(id, wordGenerator.getRandomWord().trim());
+
+  console.log("roomOfWord", roomOfWord);
+
+  const data = { message: roomOfWord.get(id) };
   res.json(data);
 });
 
@@ -47,7 +52,10 @@ router.get("/getPlayer", (req, res) => {
 
 router.post("/checkChat", (req, res) => {
   let clientVal = req.body.message;
-  let serverVal = randomWord;
+
+  let id = req.body.roomId;
+
+  let serverVal = roomOfWord.get(id);
 
   if (clientVal === serverVal) {
     res.json({ result: true });

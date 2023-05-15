@@ -1,5 +1,3 @@
-const rooms = [];
-
 const timerInfo = [];
 
-module.exports = { rooms, timerInfo };
+module.exports = { timerInfo };
