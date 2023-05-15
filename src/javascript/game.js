@@ -102,6 +102,42 @@ function gameEnd() {
   remainingTimeElement.innerHTML = 60;
 }
 
+gameSocket.on("roundOfGameSet", onRoundOfGameSet);
+
+function onRoundOfGameSet() {
+  drawingTool = false;
+  isPainter = true;
+
+  onCanvasInit();
+
+  let suggested_word = document.getElementById("suggested-word");
+  suggested_word.innerText = "-";
+  start_button.innerHTML = "게임 시작"; // 버튼의 텍스트를 초기화합니다.
+
+  let elapsedTimeElement = document.getElementById("elapsed-time");
+  elapsedTimeElement.innerHTML = 0;
+
+  let remainingTimeElement = document.getElementById("remaining-time");
+  remainingTimeElement.innerHTML = 60;
+
+  while (ul.firstChild) {
+    // ul의 자식 노드가 존재하는 동안
+    ul.removeChild(ul.firstChild); // ul의 첫 번째 자식 노드를 삭제
+  }
+
+  const li = document.createElement("li"); // 새로운 리스트 아이템 생성
+  li.textContent = "게임이 종료되었습니다."; // 리스트 아이템에 메시지 추가
+  li.classList.add("message"); // message 클래스 추가
+  ul.appendChild(li); // 리스트에 아이템 추가
+
+  if (boss) {
+    gameSocket.emit("clearUserScore");
+    timerSocket.emit("stop");
+    isStart = false;
+    boss = false;
+  }
+}
+
 gameSocket.on("currentPlayer", currentPlayer);
 
 function currentPlayer() {
