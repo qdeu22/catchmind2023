@@ -57,3 +57,19 @@ body {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+
+.ranklist {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.rank {
+  list-style: none; /* 리스트 기본 스타일 제거 */
+  width: 150px;
+  height: 350px;
+  padding: 0;
+  margin: 0;
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}

@@ -131,7 +131,7 @@ function onRoundOfGameSet() {
   ul.appendChild(li); // 리스트에 아이템 추가
 
   if (boss) {
-    gameSocket.emit("clearUserScore");
+    gameSocket.emit("gameResult"); // 게임결과
     timerSocket.emit("stop");
     isStart = false;
     boss = false;
@@ -193,6 +193,23 @@ function onUserList(data) {
     chat_members.appendChild(li);
   });
 }
+// 게임 결과 등수
+gameSocket.on("ranklist", onRanklist);
+
+function onRanklist(data) {
+  const chat_members = document.querySelector(".rank");
+
+  // chat_members의 자식 노드들을 모두 제거
+  while (chat_members.firstChild) {
+    chat_members.removeChild(chat_members.firstChild);
+  }
+
+  data.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = `순위: ${item.rank}등!! ${item.name}님 점수: ${item.value}`;
+    chat_members.appendChild(li);
+  });
+}
 
 gameSocket.on("correct-player", onCorrectPlayer);
 
@@ -241,4 +258,15 @@ gameSocket.on("random-escape", onRandomEscape);
 
 function onRandomEscape() {
   timerSocket.emit("stop");
+}
+
+gameSocket.on("clear-ranklist", onClearRankList);
+
+function onClearRankList() {
+  const chat_members = document.querySelector(".rank");
+
+  // chat_members의 자식 노드들을 모두 제거
+  while (chat_members.firstChild) {
+    chat_members.removeChild(chat_members.firstChild);
+  }
 }
