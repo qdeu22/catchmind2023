@@ -44,6 +44,8 @@ form.addEventListener("submit", (event) => {
         .then((result) => {
           if (result.result) {
             gameSocket.emit("correct-player", { username });
+            timerSocket.emit("clear-remainingTime");
+            timerSocket.emit("remainingTime");
             gameSocket.emit("change-player"); //임시!
           }
         })

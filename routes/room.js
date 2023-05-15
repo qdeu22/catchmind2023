@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 
-const { rooms } = require("../rooms");
+const rooms = require("../roomss");
 
 router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "views", "room.html"));
@@ -20,14 +20,14 @@ router.post("/create", (req, res) => {
 
   // 방 생성 작업 수행
   const newRoom = {
-    id: rooms.length + 1,
+    id: rooms.getRooms().length + 1,
     name: roomName,
     users: new Map(),
     userScore: new Map(),
   };
 
-  rooms.push(newRoom);
-  console.log("생성된 방 목록 배열 =>", rooms);
+  rooms.addItem(newRoom);
+  console.log("생성된 방 목록 배열 =>", rooms.getRooms());
 
   // 생성된 방 정보를 클라이언트에게 응답
   res.json({
@@ -40,9 +40,7 @@ router.post("/create", (req, res) => {
 router.get("/:id", (req, res) => {
   const roomId = req.params.id;
 
-  const room = rooms.find((room) => {
-    return room.id === parseInt(roomId); // parseInt 꼭하기
-  });
+  const room = rooms.find(parseInt(roomId));
 
   console.log(`/room/${roomId}를 통해 찾은 방 객체 =>`, room);
 

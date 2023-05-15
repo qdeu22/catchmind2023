@@ -2,8 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 
-const { rooms } = require("../rooms");
-
+const rooms = require("../roomss");
 const roomOfInfo = require("../roomOfInfo");
 
 const wordModule = require("../lib/file");
@@ -14,7 +13,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/rooms", (req, res) => {
-  res.json(rooms);
+  res.json(rooms.getRooms());
 });
 
 router.get("/getRandomWord", (req, res) => {
@@ -26,9 +25,7 @@ router.get("/getRandomWord", (req, res) => {
 
 router.get("/getReader", (req, res) => {
   const id = req.query.id;
-  const targetRoom = rooms.find((room) => {
-    return room.id === parseInt(id);
-  });
+  const targetRoom = rooms.find(parseInt(id));
   const [reader] = targetRoom.users.entries().next().value;
   const data = { reader };
   console.log(`${id}번 방의 방장은 ${reader}님 입니다.`);
@@ -37,9 +34,7 @@ router.get("/getReader", (req, res) => {
 
 router.get("/getPlayer", (req, res) => {
   const id = req.query.id;
-  const targetRoom = rooms.find((room) => {
-    return room.id === parseInt(id);
-  });
+  const targetRoom = rooms.find(parseInt(id));
 
   let data = true;
   const number = targetRoom.users.size;
