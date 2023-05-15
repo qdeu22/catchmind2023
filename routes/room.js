@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 
-const rooms = require("../roomss");
+const rooms = require("../rooms");
 
 router.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "views", "room.html"));
