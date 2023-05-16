@@ -31,3 +31,15 @@
   - [ ] 클라이언트에서 채팅을 통해 입력된 값이 올바른 경우 실행되는 콜백함수 #socket.on("correct-player")
   - [ ] 게임이 종료되거나 취소된후 접속자들의 점수를 초기화하는 콜백함수 #socket.on("clearUserScore")
   - [ ] 라운드 종료된 후 게임결과를 생성하는 콜백함수 #socket.on("gameResult")
+- [ ] 루트 라우터
+  - [ ] 메인페이지로 이동시키는 함수 #router.get("/")
+  - [ ] 생성된 방들을 fetch API로 요청받아 목록표시로 응답하는 함수 #router.get("/rooms")
+  - [ ] 게임중이나 시작할때 서버로부터 랜덤단어 생성하여 가져오고 서버에 그 단어를 roomOfWord의 Map()에 저장해주는 함수 #router.get("/getRandomWord")
+  - [ ] 접속한 방의 방장이 누구인지 요청하여 클라이언트에 응답하는 함수 #router.get("/getReader")
+  - [ ] 게임하기전 현재 방의 인원수가 몇명인지 응답하는 함수 #router.get("/getPlayer")
+  - [ ] 게임중 채팅으로부터 입력받은 단어가 서버에서 해당 방의 단어와 일치하는 비교하여 클라이언트에 응답하는 함수 #router.get("/checkChat")
+  - [ ] 방에 입장하기전 클릭한 방이 현재 게임중인지 아닌지 서버에게 요청하여 클라이언트에게 응답하는 함수 #router.get("/checkRoom")
+- [ ] room 라우터
+  - [ ] 방 페이지로 이동시키는 함수 #router.get("/room")
+  - [ ] 클라이언트로부터 방을 생성하면 해당 방이름을 가져와서 방을 생성하여 생성된 정보를 클라이언트에게 전달하는 함수 #router.get("/room/create")
+  - [ ] 방 생성이 된후 방의 링크를 클릭하면 해당 방의 id(방 번호)에 동적으로 접근하는 함수 #router.get("/room/:id")
