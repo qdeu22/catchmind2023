@@ -22,7 +22,7 @@ router.post("/create", (req, res) => {
   const roomName = req.body.roomName;
 
   // 방이름이 없거나 빈 값이면 오류 처리
-  if (roomName === null || roomName === "") {
+  if (roomName === null || roomName.trim() === "") {
     res.json({
       success: false,
     });
