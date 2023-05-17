@@ -7,7 +7,7 @@ class Rooms {
     this.Rooms.push(item);
   }
   filter(roomId) {
-    this.Rooms = this.Rooms.filter((room) => room.id !== roomId);
+    this.Rooms = this.Rooms.filter((room) => room.id !== parseInt(roomId));
   }
   find(roomId) {
     return this.Rooms.find((room) => {

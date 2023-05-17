@@ -29,6 +29,14 @@ router.post("/create", (req, res) => {
     return;
   }
 
+  let ID;
+
+  if (rooms.getRooms().length === 0) {
+    ID = 1;
+  } else {
+    ID = rooms.getRooms()[rooms.getRooms().length - 1].id + 1;
+  }
+
   /**
    * 새로운 방 생성 작업
    * @param id 방 번호
@@ -37,7 +45,7 @@ router.post("/create", (req, res) => {
    * @param userScore { 사용자 이름 => 점수 }
    */
   const newRoom = {
-    id: rooms.getRooms().length + 1,
+    id: ID,
     name: roomName,
     users: new Map(),
     userScore: new Map(),
