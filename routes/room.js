@@ -29,6 +29,14 @@ router.post("/create", (req, res) => {
     return;
   }
 
+  // 똑같은 방이 존재하면
+  if (rooms.findByName(roomName)) {
+    res.json({
+      success: false,
+    });
+    return;
+  }
+
   let ID;
 
   if (rooms.getRooms().length === 0) {

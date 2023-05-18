@@ -14,6 +14,11 @@ class Rooms {
       return room.id === parseInt(roomId);
     });
   }
+  findByName(name) {
+    return this.Rooms.find((room) => {
+      return room.name === name;
+    });
+  }
   getRooms() {
     return this.Rooms;
   }
