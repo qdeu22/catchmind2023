@@ -127,6 +127,9 @@ function gameEnd() {
   // 캔버스 초기화
   onCanvasInit();
 
+  const painter_name = document.getElementById("painter-name");
+  painter_name.innerText = "게임 중이 아닙니다.";
+
   let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
 
@@ -147,6 +150,9 @@ function onRoundOfGameSet() {
   isPainter = true;
 
   onCanvasInit();
+
+  const painter_name = document.getElementById("painter-name");
+  painter_name.innerText = "게임 중이 아닙니다.";
 
   let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
@@ -305,6 +311,9 @@ function onEscape() {
   let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
 
+  const painter_name = document.getElementById("painter-name");
+  painter_name.innerText = "게임 중이 아닙니다.";
+
   //모든 유저 채팅 검증 X
   isPainter = true;
   start_button.innerHTML = "게임 시작";
@@ -342,4 +351,12 @@ function onClearRankList() {
   while (chat_members.firstChild) {
     chat_members.removeChild(chat_members.firstChild);
   }
+}
+
+// 모든 클라이언트는 게임이 시작되면 누구의 플레이어 턴(그림그리는 사람)인지 이름을 확인
+gameSocket.on("next-player-name", onNextPlayerName);
+
+function onNextPlayerName(username) {
+  const painter_name = document.getElementById("painter-name");
+  painter_name.innerText = username;
 }
