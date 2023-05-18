@@ -140,4 +140,31 @@ router.post("/checkRoom", (req, res) => {
   res.json(data);
 });
 
+/**
+ * 클라이언트의 사용자 이름과 서버에 저장된 사용자이름을 중복 비교하는 함수
+ * (http://localhost:3000/checkDuplicate)에 대한 POST 요청을 처리하는 핸들러 함수
+ */
+router.post("/checkDuplicate", (req, res) => {
+  // 클라이언트로 부터 가져온 사용자 이름
+  let username = req.body.username;
+
+  // 클라이언트에서 아무 값도 입력안하면 그냥 이 함수 종료
+  if (!username) {
+    return;
+  }
+
+  // 해당 방 번호
+  let id = req.body.roomId;
+
+  // 서버에 중복된 이름이 존재하면 true, 아니면 false
+  let isDuplicate = rooms.find(id).users.has(username.trim());
+
+  // 중복된 값이 있다면
+  if (isDuplicate) {
+    res.json({ result: true });
+  } else {
+    res.json({ result: false });
+  }
+});
+
 module.exports = router;

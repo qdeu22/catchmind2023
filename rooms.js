@@ -11,7 +11,7 @@ class Rooms {
   }
   find(roomId) {
     return this.Rooms.find((room) => {
-      return room.id === roomId;
+      return room.id === parseInt(roomId);
     });
   }
   getRooms() {

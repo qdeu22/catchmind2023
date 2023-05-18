@@ -1,7 +1,7 @@
 const username = prompt("닉네임을 입력하세요.");
 
 // 닉네임이 빈값이거나 없다면
-if (username === null || username === "") {
+if (username === null || username.trim() === "") {
   // 메인페이지로 이동
   window.location.href = "/";
 }
@@ -24,6 +24,24 @@ const currentPath = window.location.pathname;
 
 // 마지막 자리 글자가 방 번호라서 추출하기
 const roomId = currentPath.slice(currentPath.lastIndexOf("/") + 1);
+
+// 방 입장시 현재 그 방에 내가 적은 이름과 똑같은 이름이 존재한지 안한지 확인하는 Fetch api
+fetch("/checkDuplicate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ username, roomId }),
+})
+  .then((response) => response.json())
+  .then((result) => {
+    //중복 이름이 존재하면
+    if (result.result) {
+      alert("중복된 이름이 존재합니다.");
+      window.location.href = "/room";
+    }
+  })
+  .catch((error) => console.error(error));
 
 canvasSocket.emit("joinRoom", roomId);
 
