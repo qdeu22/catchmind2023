@@ -127,6 +127,9 @@ function gameEnd() {
   // 캔버스 초기화
   onCanvasInit();
 
+  // 모든 사람 그림 지우기 버튼 o
+  isClearAuthority = true;
+
   const painter_name = document.getElementById("painter-name");
   painter_name.innerText = "게임 중이 아닙니다.";
 
@@ -150,6 +153,9 @@ function onRoundOfGameSet() {
   isPainter = true;
 
   onCanvasInit();
+
+  // 모든 사람 그림 지우기 버튼  o
+  isClearAuthority = true;
 
   const painter_name = document.getElementById("painter-name");
   painter_name.innerText = "게임 중이 아닙니다.";
@@ -198,6 +204,9 @@ function currentPlayer() {
   // 그림을 그릴 수 있음
   drawingTool = false;
 
+  // 모든 사람 그림 지우기 버튼  o
+  isClearAuthority = true;
+
   // 서버에서 단어 가지고 옴
   getWord();
 }
@@ -237,6 +246,9 @@ function onExchange() {
 
   //캔버스 초기화
   onCanvasInit();
+
+  // 모든 사람 그림 지우기 버튼  x
+  isClearAuthority = false;
 
   let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";
@@ -307,6 +319,9 @@ function onEscape() {
 
   //캔버스 초기화
   onCanvasInit();
+
+  // 모든 사람 그림 지우기 버튼  o
+  isClearAuthority = true;
 
   let suggested_word = document.getElementById("suggested-word");
   suggested_word.innerText = "-";

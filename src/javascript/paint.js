@@ -122,3 +122,23 @@ function onCanvasInit() {
 function isPainterPaint() {
   drawingTool = true;
 }
+
+// 그림 지우기 버튼
+const clear_button = document.getElementById("clear-button");
+
+// 처음 모든 클라이언트는 그림을 지우는 권한을 가지고 있다.
+let isClearAuthority = true;
+
+clear_button.addEventListener("click", function () {
+  if (isClearAuthority) {
+    onCanvasInit();
+    canvasSocket.emit("clear-canvas");
+  }
+});
+
+// 서버로 부터 클라이언트에게 그림을 지우도록 명령받음
+canvasSocket.on("clear-canvas", onClearCanvas);
+
+function onClearCanvas() {
+  onCanvasInit();
+}
