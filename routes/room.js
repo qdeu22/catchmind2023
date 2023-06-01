@@ -4,6 +4,8 @@ const router = express.Router();
 
 const rooms = require("../rooms");
 
+const roomOfInfo = require("../roomOfInfo");
+
 /**
  * 방 생성 페이지 함수
  * (http://localhost:3000/room)에 대한 GET 요청을 처리하는 핸들러 함수
@@ -93,7 +95,12 @@ router.get("/:id", (req, res) => {
 
   // 방이 존재한다면
   if (room) {
-    res.sendFile(path.join(__dirname, "..", "views", "channel.html"));
+    //url로 접속할경우의 결합 제거
+    if (roomOfInfo.find(roomId)) {
+      res.status(404).json({ error: `방 ${roomId}은 게임중입니다.` });
+    } else {
+      res.sendFile(path.join(__dirname, "..", "views", "channel.html"));
+    }
   } else {
     res.status(404).json({ error: `방 ${roomId}은 존재하지 않습니다.` });
   }
