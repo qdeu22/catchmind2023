@@ -11,40 +11,44 @@ ol {
   padding: 10px;
 }
 body {
-  background-color: #efefef;
+  background-color: rgb(200, 228, 255);
 }
 
 .navBar {
-  background-color: #ddd;
+  border-radius: 10px;
+  background-color: rgb(150, 180, 255);
   padding: var(--gap);
   flex-shrink: 0;
 }
 .box {
-  background-color: #ddd;
+  border-radius: 10px;
+  background-color: rgb(150, 180, 255);
   padding: var(--gap);
   display: flex;
   gap: var(--gap);
-  min-height: 800px; /*박스의 최소높이 줌*/
+  min-height: 600px; /*박스의 최소높이 줌*/
   flex-direction: row;
 }
 .box-navbar,
 .box-contents {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: var(--gap);
+  background-color: rgba(0, 0, 255, 0.2);
+  border-radius: 10px;
 }
-.box-sidebar {
-  width: 140px; /*이 고정사이드바가 언제나 이 크기 유지는 안됌...*/
-  flex-shrink: 0; /*축소가 되는 비율...*/
+.box-navbar {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .box-contents {
+  padding: 5px;
   flex-grow: 1; /*사용가능 공간 전부 씀*/
   min-width: 0; /*최소 사이즈*/
 }
 
 .userlist {
-  display: inline-block;
+  display: flex;
   vertical-align: top;
+  text-align: center;
 }
 
 .user-list {
@@ -63,6 +67,11 @@ body {
   vertical-align: top;
 }
 
+.flexbox {
+  display: flex;
+  padding: 10px;
+}
+
 .rank {
   list-style: none; /* 리스트 기본 스타일 제거 */
   width: 150px;
@@ -72,4 +81,47 @@ body {
   background-color: #f2f2f2;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+button {
+  font-size: 26px;
+  border-radius: 10px;
+}
+
+.buttondiv {
+  display: flex;
+}
+
+#start-button:hover {
+  background-color: blue;
+  color: white;
+  transition: 0.5s;
+}
+
+#clear-button:hover {
+  background-color: red;
+  transition: 0.5s;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion {
+  padding-left: 10px;
+}
+
+.time {
+  width: 135px;
+  height: 45px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background-color: white;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#remaining-time {
+  color: red;
 }

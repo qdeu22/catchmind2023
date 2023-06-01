@@ -11,61 +11,76 @@
 
   <body>
     <div class="navBar">
-      <div id="room-number" class="box-navbar"></div>
+      <div id="room-number" class="box-navbar">
+        <div>
+          <p style="font-weight: bold">실시간 카운트다운</p>
+          <div class="time">
+            <p>경과 시간: <span id="elapsed-time">0</span>초</p>
+            <p>남은 시간: <span id="remaining-time">60</span>초</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="container">
       <section class="box">
         <div class="box-contents">
-          <canvas id="jsCanvas" class="canvas"></canvas>
-          <button id="clear-button">그림 지우기</button>
-          <script src="/javascript/paint.js"></script>
-          <div class="chat-input">
-            <div class="chat-top">
-              <div class="chat-username"></div>
-              <div class="chat-members"></div>
+          <div class="flexbox">
+            <div style="padding: 10px">
+              <canvas id="jsCanvas" class="canvas"></canvas>
+              <div class="buttondiv">
+                <button id="start-button">게임 시작</button>
+                <button id="clear-button">그림 지우기</button>
+              </div>
             </div>
-            <ul class="chat"></ul>
-            <form>
-              <input type="text" placeholder="메시지를 입력하세요" />
-              <button type="submit">전송</button>
-            </form>
-            <script src="/javascript/chat.js"></script>
+
+            <div class="chat-input">
+              <div class="chat-top">
+                <div class="chat-username"></div>
+                <div class="chat-members"></div>
+              </div>
+              <ul class="chat"></ul>
+              <form>
+                <input type="text" placeholder="메시지를 입력하세요" />
+                <button type="submit">전송</button>
+              </form>
+            </div>
+            <div style="padding-left: 10px">
+              <div class="userlist">
+                <div>
+                  <h2>접속한 사용자</h2>
+                  <ul class="user-list"></ul>
+                </div>
+                <div class="ranklist">
+                  <h2>랭킹</h2>
+                  <ul class="rank"></ul>
+                </div>
+              </div>
+              <table>
+                <tr>
+                  <td>현재 플레이어(페인터)</td>
+                </tr>
+                <tr>
+                  <td id="painter-name">게임 중이 아닙니다.</td>
+                </tr>
+              </table>
+            </div>
+            <div class="suggestion">
+              <table class="suggestion">
+                <tr>
+                  <td>제 시 어</td>
+                </tr>
+                <tr>
+                  <td id="suggested-word">-</td>
+                </tr>
+              </table>
+            </div>
           </div>
-          <div class="userlist">
-            <h1>접속한 사용자</h1>
-            <ul class="user-list"></ul>
-          </div>
-          <div class="ranklist">
-            <h1>랭킹</h1>
-            <ul class="rank"></ul>
-            <table>
-              <tr>
-                <td>현재 플레이어(페인터)</td>
-              </tr>
-              <tr>
-                <td id="painter-name">게임 중이 아닙니다.</td>
-              </tr>
-            </table>
-          </div>
-          <button id="start-button">게임 시작</button>
-          <script src="/javascript/game.js"></script>
-          <table>
-            <tr>
-              <td>제 시 어</td>
-            </tr>
-            <tr>
-              <td id="suggested-word">-</td>
-            </tr>
-          </table>
-          <h1>실시간 카운트다운</h1>
-          <p>경과 시간: <span id="elapsed-time">0</span>초</p>
-          <p>남은 시간: <span id="remaining-time">60</span>초</p>
-          <script src="/javascript/timer.js"></script>
         </div>
       </section>
-    </div>
-    <div class="bottomBar">
-      <p>바텀</p>
+      <script src="/javascript/paint.js"></script>
+      <script src="/javascript/game.js"></script>
+      <script src="/javascript/chat.js"></script>
+      <script src="/javascript/timer.js"></script>
     </div>
   </body>
 </html>
