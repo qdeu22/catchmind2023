@@ -296,6 +296,7 @@ gameSocket.on("correct-player", onCorrectPlayer);
 function onCorrectPlayer(data) {
   const li = document.createElement("li");
   li.textContent = `${data.username}님이 정답을 맞쳤습니다.`;
+  li.classList.add("notice");
   li.classList.add("message");
   ul.appendChild(li);
 
