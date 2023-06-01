@@ -1,8 +1,41 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+div {
+  padding: 50px;
+  width: 1400px;
+  height: 570px;
+  background: linear-gradient(
+    to bottom,
+    rgb(43, 134, 226),
+    rgb(176, 185, 252),
+    rgb(43, 134, 226)
+  );
+  border: 10px solid rgb(43, 134, 226);
+  border-radius: 30px;
 }
 
 a {
   color: #00b7ff;
+  cursor: pointer;
+}
+
+a:hover {
+  color: blueviolet;
+  transition: 0.5s;
+}
+
+.hover {
+  vertical-align: middle;
+  width: 250px;
+  height: 60px;
+  text-align: center;
+  border-radius: 10px;
+  background-color: azure;
+  border: 1px solid azure;
+}
+
+.hover:hover {
+  background-color: lightcyan;
+  transition: 0.5s;
 }
