@@ -1,3 +1,22 @@
+button {
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.cssdiv {
+  padding: 50px;
+  width: 1400px;
+  height: 570px;
+  background: linear-gradient(
+    to bottom,
+    rgb(43, 134, 226),
+    rgb(176, 185, 252),
+    rgb(43, 134, 226)
+  );
+  border: 10px solid rgb(43, 134, 226);
+  border-radius: 30px;
+}
+
 /* 모달 배경 스타일 */
 #room-modal {
   display: none;
@@ -35,4 +54,49 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+#create-room:hover,
+#room-create-button:hover {
+  background-color: blue;
+  color: white;
+  transition: 0.5s;
+}
+
+#delete-room:hover {
+  background-color: red;
+  transition: 0.5s;
+}
+
+li {
+  list-style: none;
+  cursor: pointer;
+}
+a {
+  text-decoration-line: none;
+  margin-top: 15px;
+  padding-top: 10px;
+  padding-left: 10px;
+  width: 350px;
+  height: 50px;
+  background-image: linear-gradient(
+    to right,
+    rgb(255, 200, 200),
+    rgb(255, 255, 100),
+    rgb(120, 255, 255)
+  );
+  display: flex;
+  border: 2px solid red;
+  border-radius: 10px;
+}
+
+a:hover {
+  color: red;
+  background-image: linear-gradient(
+    to right,
+    rgb(120, 255, 255),
+    rgb(255, 200, 200),
+    rgb(255, 255, 100)
+  );
+  transition: 0.5s;
 }
