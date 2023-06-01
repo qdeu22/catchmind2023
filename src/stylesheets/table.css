@@ -1,7 +1,7 @@
 table {
   border-collapse: collapse;
   width: 100%;
-  max-width: 500px;
+  max-width: 250px;
   margin: 0 auto;
 }
 th,
@@ -17,4 +17,8 @@ td {
 th {
   background-color: #4caf50;
   color: white;
+}
+.suggestion {
+  margin-top: 100px;
+  width: 185px;
 }
