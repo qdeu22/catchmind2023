@@ -4,7 +4,7 @@
 }
 .chat {
   list-style: none; /* 리스트 기본 스타일 제거 */
-  width: 600px;
+  width: 450px;
   height: 400px;
   padding: 0;
   margin: 0;
@@ -14,13 +14,18 @@
   overflow-y: auto;
 }
 .chat-top {
-  width: 600px;
+  justify-content: space-evenly;
+  width: 450px;
   display: flex;
   align-items: center; /* 수직 정렬 */
 }
 .chat-username,
 .chat-members {
-  width: 300px;
+  width: 185px;
+  text-align: center;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background-color: #f2f2f2;
 }
 
 .message {
@@ -36,10 +41,11 @@ button[type="submit"] {
   padding: 0.5rem;
   border: none;
   border-radius: 0.25rem;
-  font-size: 2.2rem;
+  font-size: 22px;
   background-color: #f8f8f8;
 }
 input[type="text"] {
+  width: 370px;
   flex-grow: 1;
   margin-right: 0.5rem;
 }
@@ -52,4 +58,5 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #0062cc;
+  transition: 0.5s;
 }
