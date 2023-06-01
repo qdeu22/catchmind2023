@@ -60,3 +60,7 @@ button[type="submit"]:hover {
   background-color: #0062cc;
   transition: 0.5s;
 }
+
+li.notice {
+  background-color: #ebf582;
+}

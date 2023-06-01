@@ -102,6 +102,7 @@ function onChatInit() {
 
   const li = document.createElement("li");
   li.textContent = "게임이 시작되었습니다.";
+  li.classList.add("notice");
   li.classList.add("message");
   ul.appendChild(li);
 }
