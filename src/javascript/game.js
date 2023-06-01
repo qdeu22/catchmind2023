@@ -177,6 +177,7 @@ function onRoundOfGameSet() {
 
   const li = document.createElement("li");
   li.textContent = "게임이 종료되었습니다.";
+  li.classList.add("notice");
   li.classList.add("message");
   ul.appendChild(li);
 
@@ -335,6 +336,7 @@ function onEscape() {
 
   const li = document.createElement("li");
   li.textContent = "탈주자 발생으로 게임이 강제 종료되었습니다.";
+  li.classList.add("notice");
   li.classList.add("message");
   ul.appendChild(li);
 
