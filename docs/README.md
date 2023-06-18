@@ -16,6 +16,7 @@
 - `node.js 18.16.0 LTS`
 - **IDE** : VSCODE
 - **Framework** : Expressjs
+- 배포 : 네이버클라우드
 <!--## 사용된 소켓
 
 ### 소켓 공통 요소
